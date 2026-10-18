@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.vsidx
+# Kết quả build, gói NuGet
+packages/
+*.nupkg
+# File tạm của hệ điều hành
+Thumbs.db
+.DS_Store
