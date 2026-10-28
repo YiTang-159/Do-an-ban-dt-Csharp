@@ -63,6 +63,21 @@ namespace QuanLyBanDienThoai.DAO
                                x.GiaNiemYet, x.MoTa, x.MaHang, x.MaLoai, x.MaDT });
         }
 
+        // Điện thoại đã được dùng ở hóa đơn, phiếu nhập, khuyến mãi, giỏ hàng hoặc bảo hành thì không xóa được.
+        // Trả về số bảng đang tham chiếu tới điện thoại này (0 = chưa dùng).
+        public int DemBangDangDung(int maDT)
+        {
+            object kq = MyConnection.ExecuteScalar(
+                "SELECT " +
+                "(SELECT CASE WHEN EXISTS(SELECT 1 FROM CHITIETHOADON WHERE MaDT = @p0) THEN 1 ELSE 0 END) + " +
+                "(SELECT CASE WHEN EXISTS(SELECT 1 FROM CHITIETPHIEUNHAPHANG WHERE MaDT = @p0) THEN 1 ELSE 0 END) + " +
+                "(SELECT CASE WHEN EXISTS(SELECT 1 FROM CHITIETKHUYENMAI WHERE MaDT = @p0) THEN 1 ELSE 0 END) + " +
+                "(SELECT CASE WHEN EXISTS(SELECT 1 FROM GIOHANG WHERE MaDT = @p0) THEN 1 ELSE 0 END) + " +
+                "(SELECT CASE WHEN EXISTS(SELECT 1 FROM BAOHANH WHERE MaDT = @p0) THEN 1 ELSE 0 END)",
+                new object[] { maDT });
+            return kq == null || kq == DBNull.Value ? 0 : Convert.ToInt32(kq);
+        }
+
         public int Delete(int maDT)
         {
             return MyConnection.ExecuteNonQuery(
