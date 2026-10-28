@@ -2,7 +2,7 @@
 {
     public class HangDT
     {
-        public string MaHang { get; set; }
+        public int MaHang { get; set; }
         public string TenHang { get; set; }
         public string QuocGia { get; set; }
     }

@@ -11,6 +11,12 @@ namespace QuanLyBanDienThoai
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Lỗi chưa bắt (ví dụ mất kết nối SQL Server) chỉ hiện thông báo, chương trình không bị tắt
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += (s, e) =>
+                MessageBox.Show(e.Exception.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             Application.Run(new MainForm());
         }
     }

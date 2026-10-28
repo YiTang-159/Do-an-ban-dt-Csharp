@@ -37,7 +37,7 @@ TV1 duyệt PR của mọi người, TV4 duyệt PR của TV1. Kiểm tra: build
 ## Chỗ dễ xung đột
 
 - `GUI/MainForm.cs`: chỉ bỏ dấu `//` ở đúng dòng của mình.
-- `DAO/DataProvider.cs`: không commit dòng chuỗi kết nối riêng của máy mình (dùng `git add -p`).
+- `DAO/MyConnection.cs`: không commit dòng chuỗi kết nối riêng của máy mình (dùng `git add -p`).
 - File SQL trong `Database/`: chỉ TV2 sửa. Cần đổi cột thì tạo Issue.
 
 ## Không được làm
