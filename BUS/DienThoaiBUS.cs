@@ -89,12 +89,14 @@ namespace QuanLyBanDienThoai.BUS
         {
             try
             {
+                if (dao.DemBangDangDung(maDT) > 0)
+                    return "Không thể xóa: điện thoại đã được dùng ở hóa đơn, phiếu nhập, khuyến mãi, giỏ hàng hoặc bảo hành";
                 if (dao.Delete(maDT) == 0) return "Không tìm thấy điện thoại cần xóa";
                 return "";
             }
             catch (Exception ex)
             {
-                return "Không thể xóa (điện thoại có thể đang được dùng ở hóa đơn, phiếu nhập hoặc khuyến mãi): " + ex.Message;
+                return "Không thể xóa: " + ex.Message;
             }
         }
 

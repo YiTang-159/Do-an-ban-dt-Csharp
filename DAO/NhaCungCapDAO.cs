@@ -39,6 +39,15 @@ namespace QuanLyBanDienThoai.DAO
                 new object[] { x.TenNCC, x.DiaChi, x.SDT, x.Email, x.MaNCC });
         }
 
+        // Số phiếu nhập hàng của nhà cung cấp này (0 = chưa có phiếu nào)
+        public int DemPhieuNhap(int maNCC)
+        {
+            object kq = MyConnection.ExecuteScalar(
+                "SELECT COUNT(*) FROM PHIEUNHAPHANG WHERE MaNCC = @p0",
+                new object[] { maNCC });
+            return kq == null || kq == DBNull.Value ? 0 : Convert.ToInt32(kq);
+        }
+
         public int Delete(int maNCC)
         {
             return MyConnection.ExecuteNonQuery(

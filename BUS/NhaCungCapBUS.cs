@@ -86,12 +86,14 @@ namespace QuanLyBanDienThoai.BUS
         {
             try
             {
+                int soPhieu = dao.DemPhieuNhap(maNCC);
+                if (soPhieu > 0) return "Không thể xóa: nhà cung cấp đã có " + soPhieu + " phiếu nhập hàng";
                 if (dao.Delete(maNCC) == 0) return "Không tìm thấy nhà cung cấp cần xóa";
                 return "";
             }
             catch (Exception ex)
             {
-                return "Không thể xóa (nhà cung cấp có thể đang được dùng ở phiếu nhập hàng): " + ex.Message;
+                return "Không thể xóa: " + ex.Message;
             }
         }
 
