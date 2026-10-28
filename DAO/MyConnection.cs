@@ -13,8 +13,7 @@ namespace QuanLyBanDienThoai.DAO
         // SQL Server Express: Data Source=.\SQLEXPRESS;...
         // Tiếng Việt: cột chữ là NVARCHAR nên không cần thêm tham số mã hóa (useUnicode chỉ dành cho MySQL).
         private const string ChuoiKetNoi =
-            @"Data Source=.;Initial Catalog=QuanLyBanDienThoai;Integrated Security=True";
-
+            @"Data Source=localhost;Initial Catalog=QuanLyBanDienThoai;User Id=qldt;Password=12345;TrustServerCertificate=True";
         // Trả về SqlConnection MỚI, CHƯA MỞ. Nơi gọi tự Open() và Dispose().
         // Dùng khi cần tự làm transaction (LuuHoaDon, LuuPhieuNhap).
         public static SqlConnection TaoKetNoi()
