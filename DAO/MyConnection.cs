@@ -9,11 +9,12 @@ namespace QuanLyBanDienThoai.DAO
     // Quy ước tham số: viết @p0, @p1, ... trong câu SQL; mảng args truyền theo đúng thứ tự (args[0] -> @p0).
     public static class MyConnection
     {
-        // Mỗi máy một tên SQL Server: tự sửa ở máy mình, KHÔNG commit dòng này (dùng git add -p).
+        // Mặc định: SQL Server chạy bằng Docker (docker-compose.yml), cổng 14333, tài khoản sa.
+        // Máy nào dùng server khác thì tự sửa ở máy mình, KHÔNG commit dòng này (dùng git add -p).
         // SQL Server Express: Data Source=.\SQLEXPRESS;...
         // Tiếng Việt: cột chữ là NVARCHAR nên không cần thêm tham số mã hóa (useUnicode chỉ dành cho MySQL).
         private const string ChuoiKetNoi =
-            @"Data Source=localhost;Initial Catalog=QuanLyBanDienThoai;User Id=qldt;Password=12345;TrustServerCertificate=True";
+            @"Data Source=localhost,14333;Initial Catalog=QuanLyBanDienThoai;User Id=sa;Password=Qldt@12345;TrustServerCertificate=True";
         // Trả về SqlConnection MỚI, CHƯA MỞ. Nơi gọi tự Open() và Dispose().
         // Dùng khi cần tự làm transaction (LuuHoaDon, LuuPhieuNhap).
         public static SqlConnection TaoKetNoi()
