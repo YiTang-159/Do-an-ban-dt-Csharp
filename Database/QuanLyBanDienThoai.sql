@@ -1,6 +1,6 @@
 ﻿-- ============================================================
 --  CSDL QuanLyBanDienThoai (SQL Server) - theo ERD hiện tại
---  15 bảng = 14 bảng ERD + THAMSO. Có thể chạy lại nhiều lần.
+--  16 bảng = 14 bảng ERD + THAMSO + TAIKHOAN (đăng nhập). Có thể chạy lại nhiều lần.
 --  Không có PHIENBAN, KHO, TONKHO: RAM, BoNho, MauSac, GiaNiemYet, SoLuongTon nằm trong DIENTHOAI.
 --  Khóa chính INT IDENTITY(1,1); bảng chi tiết dùng khóa chính kép.
 -- ============================================================
@@ -12,6 +12,7 @@ GO
 
 -- Xóa bảng cũ (bảng con xóa trước bảng cha) để chạy lại không bị lỗi.
 -- Gồm cả TONKHO, PHIENBAN, KHO của phiên bản ERD cũ (nếu máy nào còn).
+DROP TABLE IF EXISTS TAIKHOAN;
 DROP TABLE IF EXISTS BAOHANH;
 DROP TABLE IF EXISTS CHITIETHOADON;
 DROP TABLE IF EXISTS CHITIETPHIEUNHAPHANG;
@@ -218,6 +219,33 @@ CREATE TABLE BAOHANH (
 );
 GO
 
+-- Tài khoản đăng nhập (ngoài ERD, giống THAMSO). Mỗi tài khoản gắn với ĐÚNG MỘT người có sẵn trong ERD:
+--   Admin, NhanVien -> MaNV (NHANVIEN);  KhachHang -> MaKH (KHACHHANG).
+-- Nhờ vậy hóa đơn, giỏ hàng, bảo hành của khách và hóa đơn do nhân viên lập luôn dùng chung MaKH, MaNV với ERD.
+-- MatKhau lưu mã băm SHA-256 (chữ thường, 64 ký tự), không lưu mật khẩu thật.
+CREATE TABLE TAIKHOAN (
+    TenDangNhap VARCHAR(50) NOT NULL PRIMARY KEY,
+    MatKhau CHAR(64) NOT NULL,
+    VaiTro NVARCHAR(20) NOT NULL,
+    MaNV INT NULL,
+    MaKH INT NULL,
+    TrangThai BIT NOT NULL CONSTRAINT DF_TK_TrangThai DEFAULT 1,   -- 1 = hoạt động, 0 = bị khóa
+    CONSTRAINT FK_TK_NV FOREIGN KEY (MaNV) REFERENCES NHANVIEN(MaNV),
+    CONSTRAINT FK_TK_KH FOREIGN KEY (MaKH) REFERENCES KHACHHANG(MaKH),
+    CONSTRAINT CK_TK_VaiTro CHECK (VaiTro IN (N'Admin', N'NhanVien', N'KhachHang')),
+    CONSTRAINT CK_TK_LienKet CHECK (
+        (VaiTro = N'KhachHang' AND MaKH IS NOT NULL AND MaNV IS NULL) OR
+        (VaiTro IN (N'Admin', N'NhanVien') AND MaNV IS NOT NULL AND MaKH IS NULL))
+);
+GO
+-- Index lọc cần QUOTED_IDENTIFIER ON (sqlcmd mặc định là OFF nếu không có -I)
+SET QUOTED_IDENTIFIER ON;
+GO
+-- Mỗi nhân viên và mỗi khách hàng chỉ có tối đa một tài khoản
+CREATE UNIQUE INDEX UQ_TK_MaNV ON TAIKHOAN(MaNV) WHERE MaNV IS NOT NULL;
+CREATE UNIQUE INDEX UQ_TK_MaKH ON TAIKHOAN(MaKH) WHERE MaKH IS NOT NULL;
+GO
+
 -- ===================== DỮ LIỆU MẪU =====================
 -- Khóa chính IDENTITY bắt đầu từ 1 theo đúng thứ tự INSERT bên dưới
 -- (script xóa bảng rồi tạo lại nên mã luôn khớp với các khóa ngoại ở dưới).
@@ -300,4 +328,16 @@ INSERT INTO BAOHANH (SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, M
 INSERT INTO GIOHANG (MaKH, MaDT, SoLuong, NgayThem) VALUES
 (2, 4, 1, '2026-10-20'),
 (3, 8, 2, '2026-10-21');
+GO
+
+-- Tài khoản mẫu (mật khẩu: admin = admin123; nhân viên = nv123456; khách hàng = kh123456)
+--   admin -> NV1 Lê Văn Cường (Quản lý);  dung -> NV2 (bán hàng);  duc -> NV3 (kho)
+--   an -> KH1 (có HD1 và bảo hành);  binh -> KH2, nam -> KH3 (có giỏ hàng)
+INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, VaiTro, MaNV, MaKH, TrangThai) VALUES
+('admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', N'Admin', 1, NULL, 1),
+('dung', 'a5d21a2fa99d15d6c13d848008559574fd222b2a51415c72abf3bae221c41f71', N'NhanVien', 2, NULL, 1),
+('duc', 'a5d21a2fa99d15d6c13d848008559574fd222b2a51415c72abf3bae221c41f71', N'NhanVien', 3, NULL, 1),
+('an', 'b9edb8982854b5e79a890577927de0c29af629a14dd8c1d326bab0056ad0a313', N'KhachHang', NULL, 1, 1),
+('binh', 'b9edb8982854b5e79a890577927de0c29af629a14dd8c1d326bab0056ad0a313', N'KhachHang', NULL, 2, 1),
+('nam', 'b9edb8982854b5e79a890577927de0c29af629a14dd8c1d326bab0056ad0a313', N'KhachHang', NULL, 3, 1);
 GO

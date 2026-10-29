@@ -9,7 +9,7 @@
 | `DTO/` | Lớp thực thể, mỗi bảng một lớp |
 | `DAO/` | Truy cập CSDL (chứa câu SQL), dùng chung lớp `MyConnection` |
 | `BUS/` | Kiểm tra dữ liệu, nghiệp vụ, tìm kiếm trên ArrayList |
-| `GUI/` | Các form Windows Forms, `MainForm` là màn hình chính |
+| `GUI/` | Các form Windows Forms: `FormDangNhap` (vào đầu tiên), `MainForm` (admin, nhân viên), `FormTrangKhachHang` (khách hàng) |
 | `Database/` | Script SQL Server tạo CSDL `QuanLyBanDienThoai` |
 | `docker-compose.yml` | Chạy SQL Server bằng Docker |
 
@@ -41,7 +41,7 @@ Thông tin kết nối của container:
 
 ### Bước 2. Tạo cơ sở dữ liệu
 
-Dùng Azure Data Studio hoặc SSMS kết nối vào server ở bước 1 (SQL Server Authentication, tick **Trust Server Certificate**), mở file `Database/QuanLyBanDienThoai.sql` rồi bấm **Execute**. Script tạo database `QuanLyBanDienThoai` cùng các bảng và có thể chạy lại nhiều lần.
+Dùng Azure Data Studio hoặc SSMS kết nối vào server ở bước 1 (SQL Server Authentication, tick **Trust Server Certificate**), mở file `Database/QuanLyBanDienThoai.sql` rồi bấm **Execute**. Script tạo database `QuanLyBanDienThoai` cùng 16 bảng (14 bảng ERD, `THAMSO`, `TAIKHOAN`) và dữ liệu mẫu, có thể chạy lại nhiều lần (chạy lại sẽ xóa dữ liệu cũ).
 
 Nếu máy có sẵn `sqlcmd`, có thể chạy bằng dòng lệnh:
 
@@ -81,6 +81,25 @@ Mở file `QuanLyBanDienThoai.csproj` bằng Visual Studio (**File → Open → 
 ```
 dotnet run
 ```
+
+## Đăng nhập và phân quyền
+
+Chương trình mở ra màn hình **Đăng nhập**. Chọn đúng vai trò rồi nhập tài khoản:
+
+| Vai trò | Tài khoản mẫu | Mật khẩu | Sau khi đăng nhập |
+|---|---|---|---|
+| Quản trị viên (Admin) | `admin` (gắn với nhân viên NV1) | `admin123` | `MainForm` đầy đủ menu, thêm mục **Tài khoản** |
+| Nhân viên | `dung`, `duc` | `nv123456` | `MainForm` chỉ có nhóm **Bán hàng** (lập hóa đơn, danh sách hóa đơn) |
+| Khách hàng | `an`, `binh`, `nam` | `kh123456` | `FormTrangKhachHang`: cửa hàng, giỏ hàng, đơn mua, bảo hành, thông tin cá nhân |
+
+Khách hàng mới bấm **Đăng ký khách hàng** ngay trên màn hình đăng nhập.
+
+**Dữ liệu thống nhất với ERD:** bảng `TAIKHOAN` (ngoài ERD, giống `THAMSO`) chỉ lưu tên đăng nhập, mã băm SHA-256 của mật khẩu, vai trò và khóa ngoại tới `NHANVIEN` (Admin, Nhân viên) hoặc `KHACHHANG` (Khách hàng). Vì vậy:
+
+- Khách hàng chỉ thấy giỏ hàng, hóa đơn, bảo hành của đúng `MaKH` của mình (mã lấy từ phiên đăng nhập, không do form truyền vào).
+- Nhân viên lập hóa đơn thì `HOADON.MaNV` chính là tài khoản đang đăng nhập; hóa đơn đó hiện ngay ở trang "Đơn mua" của khách.
+- Đăng ký khách hàng thêm `KHACHHANG` và `TAIKHOAN` trong một transaction.
+- Khách đặt hàng vào `GIOHANG`; nhân viên bấm **Lấy từ giỏ hàng** ở form bán hàng để lập hóa đơn (trừ tồn kho, cộng điểm tích lũy, xóa dòng giỏ đã mua).
 
 ## Gặp lỗi thường gặp
 

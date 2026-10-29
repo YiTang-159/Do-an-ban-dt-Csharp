@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using QuanLyBanDienThoai.BUS;
 
 namespace QuanLyBanDienThoai.GUI
 {
@@ -10,6 +11,8 @@ namespace QuanLyBanDienThoai.GUI
     // thanh xanh phía trên, vùng nội dung bên phải có tiêu đề ở giữa và form con nhúng bên trong, chân trang.
     // Bấm tên nhóm để mở/đóng các mục con; bấm mục con để mở form.
     // Ai làm xong form nào thì BỎ DẤU // ở đúng dòng ThemMuc của mình trong TaoMenu() (chỉ sửa đúng dòng của mình).
+    // Menu theo vai trò đăng nhập: Admin thấy tất cả (kèm Tài khoản); Nhân viên chỉ thấy nhóm Bán hàng.
+    // Khách hàng không dùng MainForm mà dùng FormTrangKhachHang (xem Program.cs).
     public class MainForm : Form
     {
         // Màu theo giao diện mẫu
@@ -52,7 +55,7 @@ namespace QuanLyBanDienThoai.GUI
             pnlForm.BackColor = Color.White;
 
             lblChao = new Label();
-            lblChao.Text = "QUẢN LÝ CỬA HÀNG BÁN ĐIỆN THOẠI\r\n\r\nChọn chức năng ở menu bên trái để bắt đầu";
+            lblChao.Text = "QUẢN LÝ CỬA HÀNG BÁN ĐIỆN THOẠI\r\n\r\nXin chào " + PhienDangNhap.HoTen + " (" + PhienDangNhap.TenVaiTroHienTai + ")\r\nChọn chức năng ở menu bên trái để bắt đầu";
             lblChao.Font = new Font("Segoe UI", 18, FontStyle.Bold);
             lblChao.ForeColor = Color.FromArgb(90, 110, 120);
             lblChao.Dock = DockStyle.Fill;
@@ -164,14 +167,14 @@ namespace QuanLyBanDienThoai.GUI
             lblHeThong.Font = new Font("Segoe UI", 10.5f);
             lblHeThong.TextAlign = ContentAlignment.MiddleLeft;
 
-            Panel avatar = TaoAvatar(34, "QT", MauXanhDam, 50);
+            Panel avatar = TaoAvatar(34, PhienDangNhap.VietTat, MauXanhDam, 50);
             avatar.Dock = DockStyle.Right;
             avatar.BackColor = MauXanh;
 
             Label lblNguoiDung = new Label();
             lblNguoiDung.Dock = DockStyle.Right;
-            lblNguoiDung.Width = 130;
-            lblNguoiDung.Text = "Quản trị viên";
+            lblNguoiDung.Width = 230;
+            lblNguoiDung.Text = PhienDangNhap.HoTen + " (" + PhienDangNhap.TenVaiTroHienTai + ")";
             lblNguoiDung.ForeColor = Color.White;
             lblNguoiDung.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             lblNguoiDung.TextAlign = ContentAlignment.MiddleLeft;
@@ -191,10 +194,30 @@ namespace QuanLyBanDienThoai.GUI
             btnAn.Cursor = Cursors.Hand;
             btnAn.Click += (s, e) => pnlSidebar.Visible = !pnlSidebar.Visible;
 
-            // Fill trước, rồi Right, Left thêm sau
+            Button btnDangXuat = new Button();
+            btnDangXuat.Dock = DockStyle.Right;
+            btnDangXuat.Width = 110;
+            btnDangXuat.Text = "Đăng xuất";
+            btnDangXuat.Font = new Font("Segoe UI", 10);
+            btnDangXuat.ForeColor = Color.White;
+            btnDangXuat.BackColor = MauXanhDam;
+            btnDangXuat.FlatStyle = FlatStyle.Flat;
+            btnDangXuat.FlatAppearance.BorderSize = 0;
+            btnDangXuat.UseVisualStyleBackColor = false;
+            btnDangXuat.Cursor = Cursors.Hand;
+            btnDangXuat.Click += (s, e) =>
+            {
+                if (MessageBox.Show("Đăng xuất khỏi tài khoản này?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+                PhienDangNhap.YeuCauDangXuat = true;     // Program quay lại màn hình đăng nhập
+                Close();
+            };
+
+            // Fill trước, rồi Right, Left thêm sau (nút Đăng xuất thêm sau cùng nên nằm sát mép phải)
             p.Controls.Add(lblHeThong);
             p.Controls.Add(avatar);
             p.Controls.Add(lblNguoiDung);
+            p.Controls.Add(btnDangXuat);
             p.Controls.Add(btnAn);
             return p;
         }
@@ -227,7 +250,7 @@ namespace QuanLyBanDienThoai.GUI
 
             Label lblTen = new Label();
             lblTen.Dock = DockStyle.Fill;
-            lblTen.Text = "Quản trị viên";
+            lblTen.Text = PhienDangNhap.HoTen;
             lblTen.ForeColor = Color.White;
             lblTen.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             lblTen.TextAlign = ContentAlignment.BottomLeft;
@@ -235,7 +258,7 @@ namespace QuanLyBanDienThoai.GUI
             Label lblTrangThai = new Label();
             lblTrangThai.Dock = DockStyle.Bottom;
             lblTrangThai.Height = 26;
-            lblTrangThai.Text = "●  Online";
+            lblTrangThai.Text = "●  " + PhienDangNhap.TenVaiTroHienTai;
             lblTrangThai.ForeColor = MauXanh;
             lblTrangThai.Font = new Font("Segoe UI", 8.5f);
             lblTrangThai.TextAlign = ContentAlignment.TopLeft;
@@ -246,7 +269,7 @@ namespace QuanLyBanDienThoai.GUI
             pnlChu.Controls.Add(lblTen);
             pnlChu.Controls.Add(lblTrangThai);
 
-            Panel avatar = TaoAvatar(40, "QT", Color.FromArgb(96, 125, 139), 64);
+            Panel avatar = TaoAvatar(40, PhienDangNhap.VietTat, Color.FromArgb(96, 125, 139), 64);
             avatar.Dock = DockStyle.Left;
             avatar.BackColor = MauMenu;
 
@@ -277,45 +300,59 @@ namespace QuanLyBanDienThoai.GUI
 
         private void TaoMenu()
         {
-            FlowLayoutPanel nDanhMuc = TaoNhom("Danh mục");
-            // TV1
-            ThemMuc(nDanhMuc, "Hãng điện thoại", () => new FormHangDT());
-            ThemMuc(nDanhMuc, "Loại điện thoại", () => new FormLoaiDienThoai());
-            ThemMuc(nDanhMuc, "Nhà cung cấp", () => new FormNhaCungCap());
-            ThemMuc(nDanhMuc, "Điện thoại", () => new FormDienThoai());
+            bool laAdmin = PhienDangNhap.LaAdmin;
 
-            FlowLayoutPanel nNhapHang = TaoNhom("Nhập hàng");
-            // TV2
-            // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
-            // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
+            // ---- Chỉ Admin ----
+            if (laAdmin)
+            {
+                FlowLayoutPanel nDanhMuc = TaoNhom("Danh mục");
+                // TV1
+                ThemMuc(nDanhMuc, "Hãng điện thoại", () => new FormHangDT());
+                ThemMuc(nDanhMuc, "Loại điện thoại", () => new FormLoaiDienThoai());
+                ThemMuc(nDanhMuc, "Nhà cung cấp", () => new FormNhaCungCap());
+                ThemMuc(nDanhMuc, "Điện thoại", () => new FormDienThoai());
 
-            FlowLayoutPanel nNhanSu = TaoNhom("Nhân sự - Khách hàng");
-            // TV2
-            // ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
-            // ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
+                FlowLayoutPanel nNhapHang = TaoNhom("Nhập hàng");
+                // TV2
+                // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
+                // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
 
-            FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
-            // TV4
-            // ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
-            // ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
-            // ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
+                FlowLayoutPanel nNhanSu = TaoNhom("Nhân sự - Khách hàng");
+                // TV2
+                // ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
+                // ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
 
+                FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
+                // TV4
+                // ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
+                // ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
+                // ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
+            }
+
+            // ---- Admin và Nhân viên ----
             FlowLayoutPanel nBanHang = TaoNhom("Bán hàng");
             // TV3
-            // ThemMuc(nBanHang, "Lập hóa đơn bán hàng", () => new FormBanHang());
-            // ThemMuc(nBanHang, "Danh sách hóa đơn", () => new FormHoaDon());
+            ThemMuc(nBanHang, "Lập hóa đơn bán hàng", () => new FormBanHang());
+            ThemMuc(nBanHang, "Danh sách hóa đơn", () => new FormHoaDon());
             // ThemMuc(nBanHang, "Giỏ hàng", () => new FormGioHang());
 
-            FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
-            // TV4
-            // ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
+            // ---- Chỉ Admin ----
+            if (laAdmin)
+            {
+                FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
+                // TV4
+                // ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
 
-            FlowLayoutPanel nThamSo = TaoNhom("Tham số");
-            // TV2
-            // ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
+                FlowLayoutPanel nThamSo = TaoNhom("Tham số");
+                // TV2
+                // ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
+
+                FlowLayoutPanel nTaiKhoan = TaoNhom("Tài khoản");
+                ThemMuc(nTaiKhoan, "Tài khoản đăng nhập", () => new FormTaiKhoan());
+            }
 
             // Mở sẵn nhóm đầu tiên
-            nDanhMuc.Visible = true;
+            if (cacNhom.Count > 0) cacNhom[0].Visible = true;
         }
 
         private static string LayBieuTuong(string tenNhom)
@@ -329,6 +366,7 @@ namespace QuanLyBanDienThoai.GUI
                 case "Bán hàng": return "¤";
                 case "Thống kê": return "▥";
                 case "Tham số": return "⚙";
+                case "Tài khoản": return "♟";
                 default: return "■";
             }
         }
