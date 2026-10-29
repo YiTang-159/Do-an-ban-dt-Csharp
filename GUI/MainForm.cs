@@ -317,7 +317,8 @@ namespace QuanLyBanDienThoai.GUI
             // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
             // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
 
-            FlowLayoutPanel nNhanSu = TaoNhom("Nhân sự - Khách hàng");
+            // Admin: "Nhân sự - Khách hàng" (có mục Nhân viên). Nhân viên: chỉ "Khách hàng", không có chữ nhân sự
+            FlowLayoutPanel nNhanSu = TaoNhom(laAdmin ? "Nhân sự - Khách hàng" : "Khách hàng");
             // TV2
             // Mục "Nhân viên" là quản lý nhân sự, CHỈ Admin thấy: khi làm xong thì bỏ // và giữ điều kiện laAdmin
             // if (laAdmin) ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
@@ -361,6 +362,7 @@ namespace QuanLyBanDienThoai.GUI
                 case "Danh mục": return "▦";
                 case "Nhập hàng": return "⇩";
                 case "Nhân sự - Khách hàng": return "☺";
+                case "Khách hàng": return "☺";
                 case "Khuyến mãi - Bảo hành": return "★";
                 case "Bán hàng": return "¤";
                 case "Thống kê": return "▥";
