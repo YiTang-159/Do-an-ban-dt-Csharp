@@ -24,9 +24,9 @@ namespace QuanLyBanDienThoai.BUS
             return TimKiemHelper.TimTuKhoa(dao.GetAll(), tuKhoa, "TenDangNhap", "HoTen", "VaiTro");
         }
 
-        // Đăng nhập với vai trò đã chọn trên màn hình đăng nhập (VaiTroTK.*).
+        // Đăng nhập: vai trò (Admin / Nhân viên / Khách hàng) lấy từ chính tài khoản, không cần chọn trên màn hình.
         // Thành công thì ghi phiên đăng nhập (PhienDangNhap) để các form dùng MaNV hoặc MaKH của người này.
-        public string DangNhap(string tenDangNhap, string matKhau, string vaiTroChon)
+        public string DangNhap(string tenDangNhap, string matKhau)
         {
             tenDangNhap = (tenDangNhap ?? "").Trim();
             if (tenDangNhap == "" || string.IsNullOrEmpty(matKhau)) return "Hãy nhập tên đăng nhập và mật khẩu";
@@ -35,8 +35,6 @@ namespace QuanLyBanDienThoai.BUS
                 TaiKhoan tk = dao.GetByTenDangNhap(tenDangNhap);
                 if (tk == null || tk.MatKhau != MatKhauHelper.Bam(matKhau)) return "Sai tên đăng nhập hoặc mật khẩu";
                 if (!tk.TrangThai) return "Tài khoản đã bị khóa, hãy liên hệ quản trị viên";
-                if (tk.VaiTro != vaiTroChon)
-                    return "Đây không phải tài khoản " + PhienDangNhap.TenVaiTro(vaiTroChon).ToLower() + ". Hãy chọn đúng vai trò đăng nhập";
                 PhienDangNhap.BatDau(tk);
                 return "";
             }

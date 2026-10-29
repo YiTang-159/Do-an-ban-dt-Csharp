@@ -11,7 +11,8 @@ namespace QuanLyBanDienThoai.GUI
     // thanh xanh phía trên, vùng nội dung bên phải có tiêu đề ở giữa và form con nhúng bên trong, chân trang.
     // Bấm tên nhóm để mở/đóng các mục con; bấm mục con để mở form.
     // Ai làm xong form nào thì BỎ DẤU // ở đúng dòng ThemMuc của mình trong TaoMenu() (chỉ sửa đúng dòng của mình).
-    // Menu theo vai trò đăng nhập: Admin thấy tất cả (kèm Tài khoản); Nhân viên chỉ thấy nhóm Bán hàng.
+    // Menu theo vai trò đăng nhập: Admin và Nhân viên thấy cùng các chức năng quản lý.
+    // Riêng quản lý nhân sự (mục Nhân viên) và nhóm Tài khoản chỉ Admin thấy (dùng biến laAdmin trong TaoMenu).
     // Khách hàng không dùng MainForm mà dùng FormTrangKhachHang (xem Program.cs).
     public class MainForm : Form
     {
@@ -300,53 +301,51 @@ namespace QuanLyBanDienThoai.GUI
 
         private void TaoMenu()
         {
+            // Admin và Nhân viên có đủ các nhóm chức năng như nhau.
+            // Chỉ Admin có: mục Nhân viên (quản lý nhân sự) và nhóm Tài khoản.
             bool laAdmin = PhienDangNhap.LaAdmin;
 
-            // ---- Chỉ Admin ----
-            if (laAdmin)
-            {
-                FlowLayoutPanel nDanhMuc = TaoNhom("Danh mục");
-                // TV1
-                ThemMuc(nDanhMuc, "Hãng điện thoại", () => new FormHangDT());
-                ThemMuc(nDanhMuc, "Loại điện thoại", () => new FormLoaiDienThoai());
-                ThemMuc(nDanhMuc, "Nhà cung cấp", () => new FormNhaCungCap());
-                ThemMuc(nDanhMuc, "Điện thoại", () => new FormDienThoai());
+            FlowLayoutPanel nDanhMuc = TaoNhom("Danh mục");
+            // TV1
+            ThemMuc(nDanhMuc, "Hãng điện thoại", () => new FormHangDT());
+            ThemMuc(nDanhMuc, "Loại điện thoại", () => new FormLoaiDienThoai());
+            ThemMuc(nDanhMuc, "Nhà cung cấp", () => new FormNhaCungCap());
+            ThemMuc(nDanhMuc, "Điện thoại", () => new FormDienThoai());
 
-                FlowLayoutPanel nNhapHang = TaoNhom("Nhập hàng");
-                // TV2
-                // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
-                // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
+            FlowLayoutPanel nNhapHang = TaoNhom("Nhập hàng");
+            // TV2
+            // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
+            // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
 
-                FlowLayoutPanel nNhanSu = TaoNhom("Nhân sự - Khách hàng");
-                // TV2
-                // ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
-                // ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
+            FlowLayoutPanel nNhanSu = TaoNhom("Nhân sự - Khách hàng");
+            // TV2
+            // Mục "Nhân viên" là quản lý nhân sự, CHỈ Admin thấy: khi làm xong thì bỏ // và giữ điều kiện laAdmin
+            // if (laAdmin) ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
+            // ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
 
-                FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
-                // TV4
-                // ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
-                // ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
-                // ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
-            }
+            FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
+            // TV4
+            // ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
+            // ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
+            // ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
 
-            // ---- Admin và Nhân viên ----
             FlowLayoutPanel nBanHang = TaoNhom("Bán hàng");
             // TV3
             ThemMuc(nBanHang, "Lập hóa đơn bán hàng", () => new FormBanHang());
             ThemMuc(nBanHang, "Danh sách hóa đơn", () => new FormHoaDon());
             // ThemMuc(nBanHang, "Giỏ hàng", () => new FormGioHang());
 
+            FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
+            // TV4
+            // ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
+
+            FlowLayoutPanel nThamSo = TaoNhom("Tham số");
+            // TV2
+            // ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
+
             // ---- Chỉ Admin ----
             if (laAdmin)
             {
-                FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
-                // TV4
-                // ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
-
-                FlowLayoutPanel nThamSo = TaoNhom("Tham số");
-                // TV2
-                // ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
-
                 FlowLayoutPanel nTaiKhoan = TaoNhom("Tài khoản");
                 ThemMuc(nTaiKhoan, "Tài khoản đăng nhập", () => new FormTaiKhoan());
             }
