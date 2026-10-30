@@ -1,0 +1,1 @@
+namespace QuanLyBanDienThoai.DTO { public class ChiTietPhieuNhapHang {public int MaPN{get;set;} public int MaDT{get;set;} public int SoLuong{get;set;} public decimal DonGiaNhap{get;set;} public decimal ThanhTien{get;set;} } }

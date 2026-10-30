@@ -1,25 +1,11 @@
-﻿using System;
-
-namespace QuanLyBanDienThoai.BUS
-{
-    // ============================================================================
-    //  BẢN TẠM của TV1 để project build được. FILE NÀY THUỘC VỀ TV2.
-    //  Khi TV2 gộp ThamSoBUS thật (đọc bảng THAMSO) thì lấy bản của TV2, bỏ bản này.
-    //  Không đưa file này vào Pull Request của TV1.
-    //  Giả định hàm static: ThamSoBUS.LayGiaTri(ten) trả về decimal, có giá trị mặc định.
-    // ============================================================================
-    public class ThamSoBUS
-    {
-        public static decimal LayGiaTri(string ten)
-        {
-            switch (ten)
-            {
-                case "SoTienMotDiem": return 100000;
-                case "TuoiNhanVienToiThieu": return 18;
-                case "NamRaMatToiThieu": return 2000;
-                case "ThangBaoHanhMacDinh": return 12;
-                default: return 0;
-            }
-        }
-    }
-}
+using System; using System.Collections; using QuanLyBanDienThoai.DAO; using QuanLyBanDienThoai.DTO;
+namespace QuanLyBanDienThoai.BUS { public class ThamSoBUS {
+ readonly ThamSoDAO dao=new ThamSoDAO();
+ public static decimal LayGiaTri(string ten){decimal macDinh=ten switch {"SoTienMotDiem"=>100000,"TuoiNhanVienToiThieu"=>18,"NamRaMatToiThieu"=>2000,"ThangBaoHanhMacDinh"=>12,_=>0}; return new ThamSoDAO().Lay(ten)??macDinh;}
+ public ArrayList GetAll()=>dao.GetAll();
+ public ArrayList TimKiem(string s)=>TimKiemHelper.TimTuKhoa(GetAll(),s,"TenThamSo","MoTa");
+ public string Them(ThamSo x)=>Ghi(x,false);
+ public string Sua(ThamSo x)=>Ghi(x,true);
+ string Ghi(ThamSo x,bool sua){if(x==null||string.IsNullOrWhiteSpace(x.TenThamSo))return "Tên tham số không được trống";if(x.GiaTri<=0)return "Giá trị phải lớn hơn 0";try{return (sua?dao.Update(x):dao.Insert(x))>0?"":"Không ghi được dữ liệu";}catch(Exception e){return e.Message;}}
+ public string Xoa(string ten){try{return dao.Delete(ten)>0?"":"Không tìm thấy tham số";}catch(Exception e){return e.Message;}}
+} }

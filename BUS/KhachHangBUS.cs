@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using QuanLyBanDienThoai.DAO;
@@ -73,5 +73,9 @@ namespace QuanLyBanDienThoai.BUS
                 return "Không thể sửa: " + ex.Message;
             }
         }
+        public ArrayList TimNangCao(string tuKhoa)=>TimKiem(tuKhoa);
+        public string Them(KhachHang x){string loi=KiemTra(x);if(loi!="")return loi;try{return dao.Insert(x)>0?"":"Không thêm được";}catch(Exception e){return e.Message;}}
+        public string Sua(KhachHang x)=>CapNhatThongTin(x);
+        public string Xoa(int id){try{return dao.Delete(id)>0?"":"Không tìm thấy khách hàng";}catch(Exception e){return "Không thể xóa (có dữ liệu liên quan): "+e.Message;}}
     }
 }

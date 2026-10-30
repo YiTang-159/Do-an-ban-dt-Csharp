@@ -1,0 +1,1 @@
+using System; namespace QuanLyBanDienThoai.DTO { public class PhieuNhapHang {public int MaPN{get;set;} public DateTime NgayNhap{get;set;} public decimal TongTien{get;set;} public int MaNCC{get;set;} public int MaNV{get;set;} } }

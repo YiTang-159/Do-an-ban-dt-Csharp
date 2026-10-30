@@ -1,0 +1,10 @@
+USE QuanLyBanDienThoai;
+GO
+-- Chạy sau script gốc; không xóa dữ liệu. Kiểm tra dữ liệu cũ trước khi thêm CHECK.
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_NV_SDT_TV2')
+ ALTER TABLE NHANVIEN ADD CONSTRAINT CK_NV_SDT_TV2 CHECK (LEN(SDT)=10 AND SDT LIKE '0%' AND SDT NOT LIKE '%[^0-9]%');
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_KH_SDT_TV2')
+ ALTER TABLE KHACHHANG ADD CONSTRAINT CK_KH_SDT_TV2 CHECK (LEN(SDT)=10 AND SDT LIKE '0%' AND SDT NOT LIKE '%[^0-9]%');
+IF NOT EXISTS (SELECT 1 FROM sys.check_constraints WHERE name = 'CK_CTPN_ThanhTien_TV2')
+ ALTER TABLE CHITIETPHIEUNHAPHANG ADD CONSTRAINT CK_CTPN_ThanhTien_TV2 CHECK (ThanhTien=SoLuong*DonGiaNhap);
+GO

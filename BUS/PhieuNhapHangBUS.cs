@@ -1,0 +1,7 @@
+using System;using System.Collections;using System.Data;using QuanLyBanDienThoai.DAO;using QuanLyBanDienThoai.DTO;
+namespace QuanLyBanDienThoai.BUS {public class PhieuNhapHangBUS {readonly PhieuNhapHangDAO dao=new PhieuNhapHangDAO();
+ public DataTable GetAll()=>dao.GetAll();public DataTable GetChiTiet(int id)=>dao.GetChiTiet(id);
+ public string TaoDong(ArrayList ds,int maDT,int soLuong,decimal gia){if(maDT<=0||soLuong<=0||gia<=0)return "Chọn điện thoại, số lượng và đơn giá hợp lệ";foreach(ChiTietPhieuNhapHang d in ds)if(d.MaDT==maDT)return "Điện thoại đã có trong phiếu";try{ds.Add(new ChiTietPhieuNhapHang{MaDT=maDT,SoLuong=soLuong,DonGiaNhap=gia,ThanhTien=checked(soLuong*gia)});return "";}catch(OverflowException){return "Thành tiền vượt giới hạn";}}
+ public decimal TinhTongTienNhap(ArrayList ds){decimal tong=0;foreach(ChiTietPhieuNhapHang d in ds)tong=checked(tong+d.ThanhTien);return tong;}
+ public string LuuPhieuNhap(PhieuNhapHang p,ArrayList ds,out int maPN){maPN=0;if(p==null||p.MaNCC<=0||p.MaNV<=0)return "Chọn nhà cung cấp và nhân viên";if(ds==null||ds.Count==0)return "Phiếu nhập phải có ít nhất một dòng";try{var daCo=new System.Collections.Generic.HashSet<int>();foreach(ChiTietPhieuNhapHang d in ds){if(d.MaDT<=0||d.SoLuong<=0||d.DonGiaNhap<=0||!daCo.Add(d.MaDT))return "Chi tiết phiếu nhập không hợp lệ hoặc trùng điện thoại";d.ThanhTien=checked(d.SoLuong*d.DonGiaNhap);}p.TongTien=TinhTongTienNhap(ds);maPN=dao.LuuPhieuNhap(p,ds);return "";}catch(Exception e){return "Không lưu được phiếu nhập: "+e.Message;}}
+} }

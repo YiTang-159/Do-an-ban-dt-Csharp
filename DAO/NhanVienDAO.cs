@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Data;
 using QuanLyBanDienThoai.DTO;
@@ -44,5 +44,8 @@ namespace QuanLyBanDienThoai.DAO
             DataTable dt = MyConnection.ExecuteQuery(SqlChon + "WHERE MaNV = @p0", new object[] { maNV });
             return dt.Rows.Count == 0 ? null : DocDong(dt.Rows[0]);
         }
+        public int Insert(NhanVien x) => MyConnection.ExecuteNonQuery("INSERT INTO NHANVIEN(Ho,Ten,GioiTinh,NgaySinh,SDT,Email,ChucVu,NgayVaoLam) VALUES(@p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7)", new object[]{x.Ho,x.Ten,x.GioiTinh,x.NgaySinh,x.SDT,x.Email,x.ChucVu,x.NgayVaoLam});
+        public int Update(NhanVien x) => MyConnection.ExecuteNonQuery("UPDATE NHANVIEN SET Ho=@p0,Ten=@p1,GioiTinh=@p2,NgaySinh=@p3,SDT=@p4,Email=@p5,ChucVu=@p6,NgayVaoLam=@p7 WHERE MaNV=@p8", new object[]{x.Ho,x.Ten,x.GioiTinh,x.NgaySinh,x.SDT,x.Email,x.ChucVu,x.NgayVaoLam,x.MaNV});
+        public int Delete(int id) => MyConnection.ExecuteNonQuery("DELETE FROM NHANVIEN WHERE MaNV=@p0",new object[]{id});
     }
 }

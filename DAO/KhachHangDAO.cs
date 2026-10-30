@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Data;
 using QuanLyBanDienThoai.DTO;
@@ -52,5 +52,7 @@ namespace QuanLyBanDienThoai.DAO
                 "UPDATE KHACHHANG SET Ho = @p0, Ten = @p1, SDT = @p2, Email = @p3, DiaChi = @p4, NgaySinh = @p5 WHERE MaKH = @p6",
                 new object[] { x.Ho, x.Ten, x.SDT, x.Email, x.DiaChi, x.NgaySinh, x.MaKH });
         }
+        public int Insert(KhachHang x) => MyConnection.ExecuteNonQuery("INSERT INTO KHACHHANG(Ho,Ten,SDT,Email,DiaChi,NgaySinh) VALUES(@p0,@p1,@p2,@p3,@p4,@p5)",new object[]{x.Ho,x.Ten,x.SDT,x.Email,x.DiaChi,x.NgaySinh});
+        public int Delete(int id) => MyConnection.ExecuteNonQuery("DELETE FROM KHACHHANG WHERE MaKH=@p0",new object[]{id});
     }
 }

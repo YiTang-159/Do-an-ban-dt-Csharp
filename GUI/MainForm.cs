@@ -314,15 +314,15 @@ namespace QuanLyBanDienThoai.GUI
 
             FlowLayoutPanel nNhapHang = TaoNhom("Nhập hàng");
             // TV2
-            // ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
-            // ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
+            ThemMuc(nNhapHang, "Lập phiếu nhập hàng", () => new FormNhapHang());
+            ThemMuc(nNhapHang, "Danh sách phiếu nhập", () => new FormPhieuNhap());
 
             // Admin: "Nhân sự - Khách hàng" (có mục Nhân viên). Nhân viên: chỉ "Khách hàng", không có chữ nhân sự
             FlowLayoutPanel nNhanSu = TaoNhom(laAdmin ? "Nhân sự - Khách hàng" : "Khách hàng");
             // TV2
             // Mục "Nhân viên" là quản lý nhân sự, CHỈ Admin thấy: khi làm xong thì bỏ // và giữ điều kiện laAdmin
-            // if (laAdmin) ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
-            // ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
+            if (laAdmin) ThemMuc(nNhanSu, "Nhân viên", () => new FormNhanVien());
+            ThemMuc(nNhanSu, "Khách hàng", () => new FormKhachHang());
 
             FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
             // TV4
@@ -342,7 +342,7 @@ namespace QuanLyBanDienThoai.GUI
 
             FlowLayoutPanel nThamSo = TaoNhom("Tham số");
             // TV2
-            // ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
+            ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
 
             // ---- Chỉ Admin ----
             if (laAdmin)

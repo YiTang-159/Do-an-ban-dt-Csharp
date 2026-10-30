@@ -1,0 +1,1 @@
+namespace QuanLyBanDienThoai.DTO { public class ThamSo { public string TenThamSo {get;set;} public decimal GiaTri {get;set;} public string MoTa {get;set;} } }
