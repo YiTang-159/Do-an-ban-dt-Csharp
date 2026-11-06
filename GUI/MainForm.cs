@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -326,9 +326,9 @@ namespace QuanLyBanDienThoai.GUI
 
             FlowLayoutPanel nKhuyenMai = TaoNhom("Khuyến mãi - Bảo hành");
             // TV4
-            // ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
-            // ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
-            // ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
+            ThemMuc(nKhuyenMai, "Khuyến mãi", () => new FormKhuyenMai());
+            ThemMuc(nKhuyenMai, "Chi tiết khuyến mãi", () => new FormChiTietKhuyenMai());
+            ThemMuc(nKhuyenMai, "Bảo hành", () => new FormBaoHanh());
 
             FlowLayoutPanel nBanHang = TaoNhom("Bán hàng");
             // TV3
@@ -338,7 +338,7 @@ namespace QuanLyBanDienThoai.GUI
 
             FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
             // TV4
-            // ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
+            ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
 
             FlowLayoutPanel nThamSo = TaoNhom("Tham số");
             // TV2
