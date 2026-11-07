@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using QuanLyBanDienThoai.DAO;
@@ -77,5 +77,21 @@ namespace QuanLyBanDienThoai.BUS
         public string Them(KhachHang x){string loi=KiemTra(x);if(loi!="")return loi;try{return dao.Insert(x)>0?"":"Không thêm được";}catch(Exception e){return e.Message;}}
         public string Sua(KhachHang x)=>CapNhatThongTin(x);
         public string Xoa(int id){try{return dao.Delete(id)>0?"":"Không tìm thấy khách hàng";}catch(Exception e){return "Không thể xóa (có dữ liệu liên quan): "+e.Message;}}
+
+        public ArrayList TimNangCao(System.Collections.Generic.List<DieuKien> conditions) => TimKiemHelper.Loc(dao.GetAll(), conditions);
+        public string NhapDanhSach(ArrayList list, out int count)
+        {
+            count=0; var errors=new System.Text.StringBuilder();
+            var keys=new System.Collections.Generic.HashSet<int>();
+            foreach(KhachHang old in dao.GetAll()) keys.Add(old.MaKH);
+            for(int i=0;i<list.Count;i++) {
+                if(list[i] is not KhachHang x) {errors.AppendLine("Dòng "+(i+2)+": sai kiểu dữ liệu");continue;}
+                string error;
+                if(x.MaKH>0 && !keys.Add(x.MaKH)) error="Mã đã tồn tại hoặc bị trùng trong file";
+                else { x.MaKH=0; try { error=Them(x); } catch(Exception ex) {error=ex.Message;} }
+                if(error=="") count++; else errors.AppendLine("Dòng "+(i+2)+": "+error);
+            }
+            return errors.ToString();
+        }
     }
 }

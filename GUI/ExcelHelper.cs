@@ -34,6 +34,7 @@ namespace QuanLyBanDienThoai.GUI
 
         public static void Xuat(ArrayList ds, Type kieu, string duongDan)
         {
+            if (System.IO.Path.GetExtension(duongDan).Equals(".xls", StringComparison.OrdinalIgnoreCase)) { ExcelXlsHelper.Xuat(ds, kieu, duongDan); return; }
             List<PropertyInfo> cot = LayCot(kieu);
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -82,6 +83,7 @@ namespace QuanLyBanDienThoai.GUI
         // Gặp ô sai kiểu thì ném FormatException có ghi rõ dòng và cột.
         public static ArrayList Nhap(string duongDan, Type kieu)
         {
+            if (System.IO.Path.GetExtension(duongDan).Equals(".xls", StringComparison.OrdinalIgnoreCase)) return ExcelXlsHelper.Nhap(duongDan, kieu);
             ArrayList kq = new ArrayList();
             List<PropertyInfo> cot = LayCot(kieu);
             using (XLWorkbook wb = new XLWorkbook(duongDan))
@@ -166,8 +168,8 @@ namespace QuanLyBanDienThoai.GUI
         {
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "Excel (*.xlsx)|*.xlsx";
-                sfd.FileName = tenGoiY + ".xlsx";
+                sfd.Filter = "Excel 97-2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx";
+                sfd.FileName = tenGoiY + ".xls";
                 if (sfd.ShowDialog() != DialogResult.OK) return false;
                 try
                 {
@@ -190,7 +192,7 @@ namespace QuanLyBanDienThoai.GUI
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Excel (*.xlsx)|*.xlsx";
+                ofd.Filter = "Excel 97-2003 (*.xls)|*.xls|Excel (*.xlsx)|*.xlsx";
                 if (ofd.ShowDialog() != DialogResult.OK) return null;
                 try
                 {
