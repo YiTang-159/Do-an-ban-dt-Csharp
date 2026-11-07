@@ -12,7 +12,7 @@ namespace QuanLyBanDienThoai.GUI
     public class FormHoaDon : Form
     {
         private HoaDonBUS bus = new HoaDonBUS();
-        private DataGridView dgvHD, dgvCT;
+        private ListView dgvHD, dgvCT;
         private TextBox txtTim;
         private CheckBox chkCuaToi;
         private Label lblDoanhThu;
@@ -50,16 +50,12 @@ namespace QuanLyBanDienThoai.GUI
             pnlTim.Controls.Add(UiHelper.Nhan("Tìm kiếm:", 10, 8));
             pnlTim.Controls.AddRange(new Control[] { txtTim, btnTim, btnTatCa, chkCuaToi });
 
-            dgvHD = new DataGridView();
-            dgvHD.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvHD);
-            dgvHD.SelectionChanged += (s, e) => NapChiTiet();
-
-            dgvCT = new DataGridView();
-            dgvCT.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvCT);
+            dgvHD = ListViewHelper.Tao();
+            dgvHD.SelectedIndexChanged += (s,e) => NapChiTiet();
+            dgvCT = ListViewHelper.Tao();
 
             SplitContainer sc = new SplitContainer();
+            sc.Size = new Size(1000,600);
             sc.Dock = DockStyle.Fill;
             sc.Orientation = Orientation.Horizontal;
             sc.Panel1.Controls.Add(dgvHD);
@@ -88,30 +84,16 @@ namespace QuanLyBanDienThoai.GUI
         {
             ArrayList ds = bus.TimKiem(txtTim.Text);
             if (chkCuaToi.Checked) ds = bus.LocCuaToi(ds);
-            GridHelper.GanDuLieu(dgvHD, ds, typeof(HoaDon));
-            UiHelper.Giau(dgvHD, "MaKH", "MaNV");
-            UiHelper.TieuDe(dgvHD, "MaHD", "Mã hóa đơn");
-            UiHelper.TieuDe(dgvHD, "NgayLap", "Ngày lập");
-            UiHelper.TieuDe(dgvHD, "PhuongThucTT", "Thanh toán");
-            UiHelper.TieuDe(dgvHD, "TongTien", "Tổng tiền");
-            UiHelper.TieuDe(dgvHD, "TenKhachHang", "Khách hàng");
-            UiHelper.TieuDe(dgvHD, "TenNhanVien", "Nhân viên lập");
+            ListViewHelper.Gan(dgvHD, ds, "MaHD|Mã hóa đơn", "NgayLap|Ngày lập", "PhuongThucTT|Thanh toán", "TongTien|Tổng tiền", "TenKhachHang|Khách hàng", "TenNhanVien|Nhân viên lập");
             lblDoanhThu.Text = "  Tổng doanh thu (" + ds.Count + " hóa đơn): " + UiHelper.Tien(bus.TinhTongTien(ds));
             NapChiTiet();
         }
 
         private void NapChiTiet()
         {
-            HoaDon hd = UiHelper.DongDangChon<HoaDon>(dgvHD);
+            HoaDon hd = ListViewHelper.Chon<HoaDon>(dgvHD);
             ArrayList ct = hd == null ? new ArrayList() : bus.GetChiTiet(hd.MaHD);
-            GridHelper.GanDuLieu(dgvCT, ct, typeof(ChiTietHoaDon));
-            UiHelper.Giau(dgvCT, "MaHD", "MaKM");
-            UiHelper.TieuDe(dgvCT, "MaDT", "Mã");
-            UiHelper.TieuDe(dgvCT, "TenHienThi", "Điện thoại");
-            UiHelper.TieuDe(dgvCT, "SoLuong", "Số lượng");
-            UiHelper.TieuDe(dgvCT, "DonGia", "Đơn giá");
-            UiHelper.TieuDe(dgvCT, "TenKM", "Khuyến mãi");
-            UiHelper.TieuDe(dgvCT, "ThanhTien", "Thành tiền");
+            ListViewHelper.Gan(dgvCT, ct, "MaDT|Mã", "TenHienThi|Điện thoại", "SoLuong|Số lượng", "DonGia|Đơn giá", "TenKM|Khuyến mãi", "ThanhTien|Thành tiền");
         }
     }
 }
