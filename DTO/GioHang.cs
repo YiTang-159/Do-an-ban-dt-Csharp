@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace QuanLyBanDienThoai.DTO
 {
@@ -11,6 +11,7 @@ namespace QuanLyBanDienThoai.DTO
         public DateTime NgayThem { get; set; }
 
         // Cột nối thêm / tính thêm khi đọc (không lưu vào bảng)
+        public string TenKhachHang { get; set; }
         public string TenHienThi { get; set; }
         public decimal GiaNiemYet { get; set; }
         public int SoLuongTon { get; set; }

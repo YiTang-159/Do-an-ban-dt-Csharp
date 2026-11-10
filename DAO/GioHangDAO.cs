@@ -11,6 +11,48 @@ namespace QuanLyBanDienThoai.DAO
     // ============================================================================
     public class GioHangDAO
     {
+        public ArrayList GetAll()
+        {
+            DataTable dt = MyConnection.ExecuteQuery(
+                "SELECT g.MaKH, g.MaDT, g.SoLuong, g.NgayThem, d.GiaNiemYet, d.SoLuongTon, " +
+                "k.Ho + N' ' + k.Ten AS TenKhachHang, " +
+                BieuThucSql.TenHienThiDT + " AS TenHienThi " +
+                "FROM GIOHANG g " +
+                "JOIN KHACHHANG k ON g.MaKH = k.MaKH " +
+                "JOIN DIENTHOAI d ON g.MaDT = d.MaDT " +
+                "ORDER BY g.NgayThem DESC, g.MaKH, g.MaDT");
+            ArrayList ds = new ArrayList();
+            foreach (DataRow r in dt.Rows)
+            {
+                GioHang x = new GioHang();
+                x.MaKH = Convert.ToInt32(r["MaKH"]);
+                x.MaDT = Convert.ToInt32(r["MaDT"]);
+                x.SoLuong = Convert.ToInt32(r["SoLuong"]);
+                x.NgayThem = Convert.ToDateTime(r["NgayThem"]);
+                x.GiaNiemYet = Convert.ToDecimal(r["GiaNiemYet"]);
+                x.SoLuongTon = Convert.ToInt32(r["SoLuongTon"]);
+                x.TenKhachHang = Convert.ToString(r["TenKhachHang"]);
+                x.TenHienThi = Convert.ToString(r["TenHienThi"]);
+                ds.Add(x);
+            }
+            return ds;
+        }
+
+        public int Insert(GioHang x)
+        {
+            DateTime ngayThem = x.NgayThem == default(DateTime) ? DateTime.Now : x.NgayThem;
+            return MyConnection.ExecuteNonQuery(
+                "INSERT INTO GIOHANG(MaKH, MaDT, SoLuong, NgayThem) VALUES(@p0, @p1, @p2, @p3)",
+                new object[] { x.MaKH, x.MaDT, x.SoLuong, ngayThem });
+        }
+
+        public int Update(GioHang x)
+        {
+            return MyConnection.ExecuteNonQuery(
+                "UPDATE GIOHANG SET SoLuong = @p0 WHERE MaKH = @p1 AND MaDT = @p2",
+                new object[] { x.SoLuong, x.MaKH, x.MaDT });
+        }
+        
         public ArrayList GetTheoKhachHang(int maKH)
         {
             DataTable dt = MyConnection.ExecuteQuery(
