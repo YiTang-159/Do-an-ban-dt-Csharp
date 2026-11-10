@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
@@ -11,7 +11,7 @@ namespace QuanLyBanDienThoai.GUI
     {
         private readonly KhuyenMaiBUS bus=new KhuyenMaiBUS();
         private readonly ChiTietKhuyenMaiBUS ctBus=new ChiTietKhuyenMaiBUS();
-        private readonly DataGridView grid=Tv4FormHelper.Luoi(),gridCT=Tv4FormHelper.Luoi();
+        private readonly ListView grid=ListViewHelper.Tao(),gridCT=ListViewHelper.Tao();
         private readonly TextBox txtTim=new TextBox{Width=165},txtTen=new TextBox(),txtMoTa=new TextBox();
         private readonly DateTimePicker dtTu=new DateTimePicker{Format=DateTimePickerFormat.Short},dtDen=new DateTimePicker{Format=DateTimePickerFormat.Short};
         private int selectedId;
@@ -26,7 +26,7 @@ namespace QuanLyBanDienThoai.GUI
             toolbar.Controls.Add(Tv4FormHelper.Nut("Xóa",(s,e)=>Xoa()));
             toolbar.Controls.Add(Tv4FormHelper.Nut("Làm mới",(s,e)=>LamMoi()));
             toolbar.Controls.Add(Tv4FormHelper.Nut("Tìm nâng cao",(s,e)=> {
-                string err=Tv4FormHelper.TimNangCao(typeof(KhuyenMai),bus.TimNangCao,grid);selectedId=0;if(err!="")MessageBox.Show(err);
+                try {using(var f=new FormTimNangCao(typeof(KhuyenMai))) {if(f.ShowDialog()==DialogResult.OK) {Hien(bus.TimNangCao(f.KetQua));XoaChiTiet();}}}catch(Exception ex){Tv4FormHelper.Loi(ex);}
             },128));
             toolbar.Controls.Add(Tv4FormHelper.Nut("Xuất Excel",(s,e)=>ExcelHelper.XuatCoHopThoai(bus.GetAll(),typeof(KhuyenMai),"KhuyenMai"),100));
             toolbar.Controls.Add(Tv4FormHelper.Nut("Nhập Excel",(s,e)=>NhapExcel(),100));
@@ -45,21 +45,23 @@ namespace QuanLyBanDienThoai.GUI
             split.Panel1.Controls.Add(upper);split.Panel2.Controls.Add(lower);
             Controls.Add(split);Controls.Add(info);Controls.Add(toolbar);
             txtTim.TextChanged+=(s,e)=>Tai();
-            grid.SelectionChanged+=(s,e)=>Chon();
+            grid.SelectedIndexChanged+=(s,e)=>Chon();
             Tai();
         }
+        private void Hien(ArrayList ds)=>ListViewHelper.Gan(grid,ds,"MaKM|Mã KM","TenKM|Tên khuyến mãi","NgayBatDau|Ngày bắt đầu","NgayKetThuc|Ngày kết thúc","MoTa|Mô tả");
+        private void HienChiTiet(ArrayList ds)=>ListViewHelper.Gan(gridCT,ds,"MaKM|Mã KM","MaDT|Mã điện thoại","TenHienThi|Điện thoại","PhanTramGiam|Giảm (%)");
+        private void XoaChiTiet(){selectedId=0;HienChiTiet(new ArrayList());}
         private void Tai()
         {
-            try {Tv4FormHelper.Hien(grid,bus.TimKiem(txtTim.Text),typeof(KhuyenMai));
-                Tv4FormHelper.Hien(gridCT,new ArrayList(),typeof(ChiTietKhuyenMai));selectedId=0;}
+            try {Hien(bus.TimKiem(txtTim.Text));XoaChiTiet();}
             catch(Exception ex){Tv4FormHelper.Loi(ex);}
         }
         private void Chon()
         {
-            if(grid.CurrentRow?.DataBoundItem is not KhuyenMai x)return;
+            KhuyenMai x=ListViewHelper.Chon<KhuyenMai>(grid);if(x==null){XoaChiTiet();return;}
             selectedId=x.MaKM;txtTen.Text=x.TenKM;txtMoTa.Text=x.MoTa;
             dtTu.Value=x.NgayBatDau;dtDen.Value=x.NgayKetThuc;
-            try{Tv4FormHelper.Hien(gridCT,ctBus.GetTheoKhuyenMai(x.MaKM),typeof(ChiTietKhuyenMai));}
+            try{HienChiTiet(ctBus.GetTheoKhuyenMai(x.MaKM));}
             catch(Exception ex){Tv4FormHelper.Loi(ex);}
         }
         private void Luu(bool sua)

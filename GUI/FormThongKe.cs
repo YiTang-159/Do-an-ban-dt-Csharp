@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -26,6 +26,7 @@ namespace QuanLyBanDienThoai.GUI
             kieu.SelectedIndex=0;bar.Controls.Add(kieu);
             bar.Controls.Add(Tv4FormHelper.Nut("Thống kê",(s,e)=>Tai()));
             bar.Controls.Add(Tv4FormHelper.Nut("Xuất PDF",(s,e)=>InPdf()));
+            tu.ValueChanged+=(s,e)=>{data=null;};den.ValueChanged+=(s,e)=>{data=null;};
             FlowLayoutPanel summary=new FlowLayoutPanel{Dock=DockStyle.Top,Height=54,AutoScroll=true};
             foreach(Label lbl in new[]{thu,chi,loi}) {lbl.Font=new Font("Segoe UI",11,FontStyle.Bold);lbl.Margin=new Padding(15,13,25,0);summary.Controls.Add(lbl);}
             TabControl tabs=new TabControl{Dock=DockStyle.Fill};
@@ -65,7 +66,7 @@ namespace QuanLyBanDienThoai.GUI
         }
         private void InPdf()
         {
-            if(data==null){MessageBox.Show("Hãy chạy thống kê trước");return;}
+            if(data==null){MessageBox.Show("Hãy chạy thống kê lại sau khi đổi khoảng ngày");return;}
             using(SaveFileDialog s=new SaveFileDialog{Filter="PDF (*.pdf)|*.pdf",FileName="ThongKe_"+DateTime.Today.ToString("yyyyMMdd")+".pdf"}) {
                 if(s.ShowDialog()!=DialogResult.OK)return;
                 try {BaoCaoPdf.Xuat(data,s.FileName);MessageBox.Show("Đã tạo báo cáo PDF: "+s.FileName);}

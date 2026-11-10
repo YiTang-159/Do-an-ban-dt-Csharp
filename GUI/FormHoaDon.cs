@@ -8,13 +8,12 @@ using QuanLyBanDienThoai.DTO;
 namespace QuanLyBanDienThoai.GUI
 {
     // Form main-sub: lưới hóa đơn ở trên (1), bấm một hóa đơn thì lưới chi tiết hóa đơn ở dưới (n) hiện theo mã.
-    // Nhân viên xem được mọi hóa đơn hoặc chỉ hóa đơn do mình lập (ô tick).
-    // Hỗ trợ tìm kiếm, tìm nâng cao, xuất Excel và in hóa đơn ra PDF.
+    // Sử dụng ListView theo chuẩn cập nhật của nhánh main.
     public class FormHoaDon : Form
     {
         private HoaDonBUS bus = new HoaDonBUS();
         private ArrayList dsHienTai = new ArrayList();
-        private DataGridView dgvHD, dgvCT;
+        private ListView dgvHD, dgvCT;
         private TextBox txtTim;
         private CheckBox chkCuaToi;
         private Label lblDoanhThu;
@@ -42,35 +41,30 @@ namespace QuanLyBanDienThoai.GUI
                 }
             };
 
-            Button btnTim = UiHelper.Nut("Tìm", 260, 8, 60);
+            Button btnTim = UiHelper.Nut("Tìm", 265, 8, 60);
             btnTim.Click += (s, e) => NapHoaDon();
 
-            Button btnTatCa = UiHelper.Nut("Hiện tất cả", 325, 8, 85);
+            Button btnTatCa = UiHelper.Nut("Hiện tất cả", 330, 8, 85);
             btnTatCa.Click += (s, e) => TaiDuLieu();
 
             chkCuaToi = new CheckBox();
             chkCuaToi.Text = "Chỉ hóa đơn tôi lập";
             chkCuaToi.AutoSize = true;
-            chkCuaToi.Location = new Point(415, 13);
+            chkCuaToi.Location = new Point(425, 13);
             chkCuaToi.CheckedChanged += (s, e) => NapHoaDon();
 
-            Button btnXuatExcel = UiHelper.Nut("Xuất Excel", 660, 8, 90);
+            Button btnXuatExcel = UiHelper.Nut("Xuất Excel", 575, 8, 90);
             btnXuatExcel.Click += btnXuatExcel_Click;
 
-            Button btnInHD = UiHelper.Nut("In hóa đơn (PDF)", 755, 8, 120);
+            Button btnInHD = UiHelper.Nut("In hóa đơn (PDF)", 675, 8, 125);
             btnInHD.Click += btnInHD_Click;
 
             pnlTim.Controls.Add(UiHelper.Nhan("Tìm kiếm:", 10, 8));
             pnlTim.Controls.AddRange(new Control[] { txtTim, btnTim, btnTatCa, chkCuaToi, btnXuatExcel, btnInHD });
 
-            dgvHD = new DataGridView();
-            dgvHD.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvHD);
-            dgvHD.SelectionChanged += (s, e) => NapChiTiet();
-
-            dgvCT = new DataGridView();
-            dgvCT.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvCT);
+            dgvHD = ListViewHelper.Tao();
+            dgvHD.SelectedIndexChanged += (s, e) => NapChiTiet();
+            dgvCT = ListViewHelper.Tao();
 
             SplitContainer sc = new SplitContainer();
             sc.Dock = DockStyle.Fill;
@@ -85,7 +79,6 @@ namespace QuanLyBanDienThoai.GUI
             lblDoanhThu.ForeColor = Color.FromArgb(200, 40, 40);
             lblDoanhThu.TextAlign = ContentAlignment.MiddleLeft;
 
-            // Fill thêm vào trước, các thanh Top/Bottom thêm sau
             Controls.Add(sc);
             Controls.Add(lblDoanhThu);
             Controls.Add(pnlTim);
@@ -107,30 +100,16 @@ namespace QuanLyBanDienThoai.GUI
         private void HienDanhSach(ArrayList ds)
         {
             dsHienTai = ds;
-            GridHelper.GanDuLieu(dgvHD, ds, typeof(HoaDon));
-            UiHelper.Giau(dgvHD, "MaKH", "MaNV");
-            UiHelper.TieuDe(dgvHD, "MaHD", "Mã hóa đơn");
-            UiHelper.TieuDe(dgvHD, "NgayLap", "Ngày lập");
-            UiHelper.TieuDe(dgvHD, "PhuongThucTT", "Thanh toán");
-            UiHelper.TieuDe(dgvHD, "TongTien", "Tổng tiền");
-            UiHelper.TieuDe(dgvHD, "TenKhachHang", "Khách hàng");
-            UiHelper.TieuDe(dgvHD, "TenNhanVien", "Nhân viên lập");
+            ListViewHelper.Gan(dgvHD, ds, "MaHD|Mã hóa đơn", "NgayLap|Ngày lập", "PhuongThucTT|Thanh toán", "TongTien|Tổng tiền", "TenKhachHang|Khách hàng", "TenNhanVien|Nhân viên lập");
             lblDoanhThu.Text = "  Tổng doanh thu (" + ds.Count + " hóa đơn): " + UiHelper.Tien(bus.TinhTongTien(ds));
             NapChiTiet();
         }
 
         private void NapChiTiet()
         {
-            HoaDon hd = UiHelper.DongDangChon<HoaDon>(dgvHD);
+            HoaDon hd = ListViewHelper.Chon<HoaDon>(dgvHD);
             ArrayList ct = hd == null ? new ArrayList() : bus.GetChiTiet(hd.MaHD);
-            GridHelper.GanDuLieu(dgvCT, ct, typeof(ChiTietHoaDon));
-            UiHelper.Giau(dgvCT, "MaHD", "MaKM");
-            UiHelper.TieuDe(dgvCT, "MaDT", "Mã");
-            UiHelper.TieuDe(dgvCT, "TenHienThi", "Điện thoại");
-            UiHelper.TieuDe(dgvCT, "SoLuong", "Số lượng");
-            UiHelper.TieuDe(dgvCT, "DonGia", "Đơn giá");
-            UiHelper.TieuDe(dgvCT, "TenKM", "Khuyến mãi");
-            UiHelper.TieuDe(dgvCT, "ThanhTien", "Thành tiền");
+            ListViewHelper.Gan(dgvCT, ct, "MaDT|Mã", "TenHienThi|Điện thoại", "SoLuong|Số lượng", "DonGia|Đơn giá", "TenKM|Khuyến mãi", "ThanhTien|Thành tiền");
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)
@@ -140,37 +119,38 @@ namespace QuanLyBanDienThoai.GUI
 
         private void btnInHD_Click(object sender, EventArgs e)
         {
-            HoaDon hd = UiHelper.DongDangChon<HoaDon>(dgvHD);
+            HoaDon hd = ListViewHelper.Chon<HoaDon>(dgvHD);
             if (hd == null)
             {
                 MessageBox.Show("Hãy chọn một hóa đơn trong danh sách để in", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            ArrayList ct = bus.GetChiTiet(hd.MaHD);
-            if (ct == null || ct.Count == 0)
+
+            ArrayList dsChiTiet = bus.GetChiTiet(hd.MaHD);
+            if (dsChiTiet == null || dsChiTiet.Count == 0)
             {
                 MessageBox.Show("Hóa đơn này không có dòng sản phẩm nào", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (SaveFileDialog dlg = new SaveFileDialog())
+            using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                dlg.Filter = "Tài liệu PDF (*.pdf)|*.pdf";
-                dlg.FileName = "HoaDon_HD" + hd.MaHD.ToString("D6") + ".pdf";
-                if (dlg.ShowDialog() == DialogResult.OK)
+                sfd.Filter = "Tài liệu PDF (*.pdf)|*.pdf";
+                sfd.FileName = "HoaDon_HD" + hd.MaHD.ToString("D6") + ".pdf";
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        InHoaDon.Xuat(hd, ct, dlg.FileName);
+                        InHoaDon.Xuat(hd, dsChiTiet, sfd.FileName);
                         if (MessageBox.Show("Đã xuất hóa đơn thành công! Bạn có muốn mở xem file PDF không?", "Thành công",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(dlg.FileName) { UseShellExecute = true });
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(sfd.FileName) { UseShellExecute = true });
                         }
                     }
                     catch (Exception ex)
                     {
-                        UiHelper.Loi("Lỗi khi xuất PDF: " + ex.Message);
+                        UiHelper.Loi("Lỗi khi in hóa đơn: " + ex.Message);
                     }
                 }
             }
