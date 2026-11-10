@@ -334,7 +334,7 @@ namespace QuanLyBanDienThoai.GUI
             // TV3
             ThemMuc(nBanHang, "Lập hóa đơn bán hàng", () => new FormBanHang());
             ThemMuc(nBanHang, "Danh sách hóa đơn", () => new FormHoaDon());
-            // ThemMuc(nBanHang, "Giỏ hàng", () => new FormGioHang());
+            ThemMuc(nBanHang, "Giỏ hàng", () => new FormGioHang());
 
             FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
             // TV4

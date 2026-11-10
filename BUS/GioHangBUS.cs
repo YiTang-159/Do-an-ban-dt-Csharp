@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using QuanLyBanDienThoai.DAO;
@@ -14,6 +14,87 @@ namespace QuanLyBanDienThoai.BUS
     public class GioHangBUS
     {
         private GioHangDAO dao = new GioHangDAO();
+
+        public ArrayList GetAll()
+        {
+            return dao.GetAll();
+        }
+
+        public ArrayList TimKiem(string tuKhoa)
+        {
+            return TimKiemHelper.TimTuKhoa(dao.GetAll(), tuKhoa, "MaKH", "MaDT", "TenKhachHang", "TenHienThi");
+        }
+
+        public ArrayList TimNangCao(List<DieuKien> dieuKien)
+        {
+            return TimKiemHelper.Loc(dao.GetAll(), dieuKien);
+        }
+
+        public string Them(GioHang x)
+        {
+            if (x == null) return "Dữ liệu không hợp lệ";
+            if (x.MaKH <= 0) return "Vui lòng chọn khách hàng";
+            if (x.MaDT <= 0) return "Vui lòng chọn điện thoại";
+            if (x.SoLuong <= 0) return "Số lượng phải lớn hơn 0";
+
+            foreach (object o in dao.GetAll())
+            {
+                GioHang g = (GioHang)o;
+                if (g.MaKH == x.MaKH && g.MaDT == x.MaDT)
+                    return "Khách hàng này đã có sản phẩm này trong giỏ hàng";
+            }
+
+            int ton = TonKho(x.MaDT);
+            if (ton < 0) return "Không tìm thấy điện thoại trong hệ thống";
+            if (x.SoLuong > ton) return "Chỉ còn " + ton + " máy trong kho, không thể thêm quá tồn kho";
+
+            if (x.NgayThem == default(DateTime)) x.NgayThem = DateTime.Now;
+
+            try
+            {
+                dao.Insert(x);
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "Không thể thêm vào giỏ hàng: " + ex.Message;
+            }
+        }
+
+        public string Sua(GioHang x)
+        {
+            if (x == null) return "Dữ liệu không hợp lệ";
+            if (x.MaKH <= 0 || x.MaDT <= 0) return "Khóa chính không hợp lệ";
+            if (x.SoLuong <= 0) return "Số lượng phải lớn hơn 0";
+
+            int ton = TonKho(x.MaDT);
+            if (ton < 0) return "Không tìm thấy điện thoại";
+            if (x.SoLuong > ton) return "Chỉ còn " + ton + " máy trong kho, không thể cập nhật quá tồn kho";
+
+            try
+            {
+                if (dao.Update(x) == 0) return "Không tìm thấy dòng giỏ hàng để cập nhật";
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "Không thể sửa giỏ hàng: " + ex.Message;
+            }
+        }
+
+        public string Xoa(int maKH, int maDT)
+        {
+            if (maKH <= 0 || maDT <= 0) return "Khóa chính không hợp lệ";
+            try
+            {
+                if (dao.Delete(maKH, maDT) == 0) return "Không tìm thấy dòng giỏ hàng để xóa";
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "Không thể xóa: " + ex.Message;
+            }
+        }
 
         // Các dòng giỏ của một khách, đã tính giá sau khuyến mãi hôm nay và thành tiền
         public ArrayList GetTheoKhachHang(int maKH)
