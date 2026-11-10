@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <Compile Include="../BUS/HangDTBUS.cs;../BUS/TimKiemHelper.cs" Link="BUS/%(Filename)%(Extension)" />
+    <Compile Include="../DAO/MyConnection.cs;../DAO/HangDTDAO.cs;../DAO/DienThoaiDAO.cs" Link="DAO/%(Filename)%(Extension)" />
+    <Compile Include="../DTO/HangDT.cs;../DTO/DienThoai.cs" Link="DTO/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

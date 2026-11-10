@@ -1,0 +1,103 @@
+@page
+@model QuanLyBanDienThoai.Web.Pages.IndexModel
+@{
+    var dangSua = Model.Nhap.MaHang > 0;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý hãng điện thoại</title>
+    <link rel="stylesheet" href="~/site.css" asp-append-version="true">
+</head>
+<body>
+<main>
+    <header>
+        <p class="eyebrow">QUẢN LÝ CỬA HÀNG ĐIỆN THOẠI</p>
+        <h1>Hãng điện thoại</h1>
+        <p>Quản lý danh mục hãng dùng chung với ứng dụng WinForms.</p>
+    </header>
+
+    @if (Model.ThongBao is not null)
+    {
+        <p class="success" role="status">@Model.ThongBao</p>
+    }
+    @if (Model.LoiTai is not null)
+    {
+        <p class="error" role="alert">@Model.LoiTai</p>
+    }
+
+    <section class="card" aria-labelledby="editor">
+        <h2 id="editor">@(dangSua ? $"Sửa hãng #{Model.Nhap.MaHang}" : "Thêm hãng")</h2>
+        <div asp-validation-summary="ModelOnly" class="error" role="alert"></div>
+        <form method="post" asp-page-handler="Luu" asp-route-TuKhoa="@Model.TuKhoa">
+            <input asp-for="Nhap.MaHang" type="hidden">
+            <div class="fields">
+                <label>Tên hãng
+                    <input asp-for="Nhap.TenHang" required maxlength="100" placeholder="Ví dụ Samsung">
+                    <span asp-validation-for="Nhap.TenHang" class="error"></span>
+                </label>
+                <label>Quốc gia
+                    <input asp-for="Nhap.QuocGia" maxlength="50" placeholder="Ví dụ Hàn Quốc">
+                    <span asp-validation-for="Nhap.QuocGia" class="error"></span>
+                </label>
+            </div>
+            @if (Model.LoiTai is null)
+            {
+                <button type="submit">@(dangSua ? "Lưu thay đổi" : "Thêm hãng")</button>
+            }
+            @if (dangSua)
+            {
+                <a asp-page="/Index" asp-route-TuKhoa="@Model.TuKhoa">Hủy sửa</a>
+            }
+        </form>
+    </section>
+
+    <section class="card" aria-labelledby="list">
+        <h2 id="list">Danh sách hãng</h2>
+        <form method="get" asp-page="/Index" class="search">
+            <label for="TuKhoa">Tìm theo mã, tên hoặc quốc gia</label>
+            <div class="actions">
+                <input asp-for="TuKhoa" type="search">
+                <button type="submit">Tìm</button>
+                <a asp-page="/Index">Hiện tất cả</a>
+            </div>
+        </form>
+
+        @if (Model.LoiTai is null)
+        {
+            <p class="count">@Model.DanhSach.Count kết quả</p>
+            @if (Model.DanhSach.Count > 0)
+            {
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th scope="col">Mã hãng</th><th scope="col">Tên hãng</th><th scope="col">Quốc gia</th><th scope="col">Thao tác</th></tr></thead>
+                        <tbody>
+                        @foreach (var hang in Model.DanhSach)
+                        {
+                            <tr>
+                                <td>@hang.MaHang</td>
+                                <td>@hang.TenHang</td>
+                                <td>@(string.IsNullOrWhiteSpace(hang.QuocGia) ? "—" : hang.QuocGia)</td>
+                                <td>
+                                    <div class="actions">
+                                        <a asp-page="/Index" asp-route-sua="@hang.MaHang" asp-route-TuKhoa="@Model.TuKhoa">Sửa</a>
+                                        <form method="post" asp-page-handler="Xoa" asp-route-TuKhoa="@Model.TuKhoa"
+                                              onsubmit="return confirm('Xóa hãng điện thoại đã chọn?');">
+                                            <input type="hidden" name="maHang" value="@hang.MaHang">
+                                            <button type="submit" class="delete">Xóa</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </section>
+</main>
+</body>
+</html>
