@@ -43,7 +43,6 @@ namespace QuanLyBanDienThoai.BUS
         public string LayThongKe(DateTime tuNgay,DateTime denNgay,out KetQuaThongKe result)
         {
             result=null;
-            if(tuNgay.Year!=denNgay.Year)return "Hãy chọn khoảng ngày trong cùng một năm để các cột Q1–Q4 không gộp nhầm nhiều năm";
             if(tuNgay.Date>denNgay.Date)return "Ngày bắt đầu không được sau ngày kết thúc";
             if(denNgay.Date>=DateTime.MaxValue.Date)return "Ngày kết thúc ngoài phạm vi hỗ trợ";
             try {
