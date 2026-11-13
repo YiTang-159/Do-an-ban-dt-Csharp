@@ -17,12 +17,29 @@ SET NUMERIC_ROUNDABORT OFF;
 BEGIN TRY
     BEGIN TRANSACTION;
 
-    -- Giữ khóa kiểm tra trong suốt giao dịch để hai phiên không nạp trùng.
-    IF EXISTS (SELECT 1 FROM dbo.LOAIDIENTHOAI WITH (UPDLOCK, HOLDLOCK)
-               WHERE TenLoai = N'[Demo20] Phổ thông')
+    -- Nhận diện bộ dữ liệu qua khách mẫu, kể cả sau khi đã đổi tên.
+    DECLARE @TienToCu nvarchar(9) = N'[Demo20] ';
+    IF EXISTS (
+        SELECT 1 FROM dbo.KHACHHANG WITH (UPDLOCK, HOLDLOCK)
+        WHERE Email = 'kh01@demo20.example'
+    ) OR EXISTS (
+        SELECT 1 FROM dbo.LOAIDIENTHOAI WITH (UPDLOCK, HOLDLOCK)
+        WHERE TenLoai = @TienToCu + N'Phổ thông'
+    )
     BEGIN
-        ROLLBACK TRANSACTION;
-        PRINT N'Bộ Demo20 đã được nạp.';
+        UPDATE dbo.LOAIDIENTHOAI SET TenLoai = STUFF(TenLoai, 1, 9, N'')
+        WHERE LEFT(TenLoai, 9) = @TienToCu;
+        UPDATE dbo.HANGDT SET TenHang = STUFF(TenHang, 1, 9, N'')
+        WHERE LEFT(TenHang, 9) = @TienToCu;
+        UPDATE dbo.NHACUNGCAP SET TenNCC = STUFF(TenNCC, 1, 9, N'')
+        WHERE LEFT(TenNCC, 9) = @TienToCu;
+        UPDATE dbo.DIENTHOAI SET TenDT = STUFF(TenDT, 1, 9, N'')
+        WHERE LEFT(TenDT, 9) = @TienToCu;
+        UPDATE dbo.KHUYENMAI SET TenKM = STUFF(TenKM, 1, 9, N'')
+        WHERE LEFT(TenKM, 9) = @TienToCu;
+
+        COMMIT TRANSACTION;
+        PRINT N'Dữ liệu mẫu đã có. Đã bỏ tiền tố cũ khỏi tên hiển thị nếu còn.';
         RETURN;
     END;
 
@@ -77,18 +94,18 @@ BEGIN TRY
         DECLARE @MaLoai int,@MaHang int,@MaNCC int,@MaDT int,@MaNV int,
                 @MaKH int,@MaKM int,@MaPN int,@MaHD int;
 
-        INSERT dbo.LOAIDIENTHOAI (TenLoai,MoTa) VALUES (N'[Demo20] '+@Loai,N'Phân loại mẫu');
+        INSERT dbo.LOAIDIENTHOAI (TenLoai,MoTa) VALUES (@Loai,N'Phân loại mẫu');
         SET @MaLoai = CONVERT(int,SCOPE_IDENTITY());
-        INSERT dbo.HANGDT (TenHang,QuocGia) VALUES (N'[Demo20] '+@Hang,
+        INSERT dbo.HANGDT (TenHang,QuocGia) VALUES (@Hang,
             CHOOSE(1+(@i-1)%5,N'Việt Nam',N'Hàn Quốc',N'Nhật Bản',N'Hoa Kỳ',N'Đài Loan'));
         SET @MaHang = CONVERT(int,SCOPE_IDENTITY());
         INSERT dbo.NHACUNGCAP (TenNCC,DiaChi,SDT,Email) VALUES
-            (N'[Demo20] Phân phối '+@Hang,@Tinh,'09070000'+@So,'ncc'+@So+'@demo20.example');
+            (N'Phân phối '+@Hang,@Tinh,'09070000'+@So,'ncc'+@So+'@demo20.example');
         SET @MaNCC = CONVERT(int,SCOPE_IDENTITY());
 
         DECLARE @Gia decimal(18,0) = 3500000 + @i*385000;
         INSERT dbo.DIENTHOAI (TenDT,HeDieuHanh,NamRaMat,RAM,BoNho,MauSac,GiaNiemYet,MoTa,MaHang,MaLoai)
-        VALUES (N'[Demo20] '+@Hang+N' '+CHOOSE(1+(@i-1)%4,N'Lite',N'Plus',N'Pro',N'Max'),
+        VALUES (@Hang+N' '+CHOOSE(1+(@i-1)%4,N'Lite',N'Plus',N'Pro',N'Max'),
             N'Android',YEAR(@HomNay)-@i%4,CHOOSE(1+(@i-1)%4,4,6,8,12),
             CHOOSE(1+(@i-1)%4,64,128,256,512),CHOOSE(1+(@i-1)%5,N'Đen',N'Trắng',N'Xanh',N'Bạc',N'Tím'),
             @Gia,N'Sản phẩm giả lập',@MaHang,@MaLoai);
@@ -125,7 +142,7 @@ BEGIN TRY
         DECLARE @TongBan decimal(18,0) = @TienBan + COALESCE(@GiaTruoc,0);
 
         INSERT dbo.KHUYENMAI (TenKM,NgayBatDau,NgayKetThuc,MoTa)
-        VALUES (N'[Demo20] '+@ChuDe,DATEADD(DAY,-2,@NgayBan),
+        VALUES (@ChuDe,DATEADD(DAY,-2,@NgayBan),
                 CASE WHEN @i%4=0 THEN DATEADD(DAY,30,@HomNay) ELSE DATEADD(DAY,2,@NgayBan) END,
                 N'Khuyến mãi mẫu theo sản phẩm');
         SET @MaKM = CONVERT(int,SCOPE_IDENTITY());
@@ -167,7 +184,7 @@ BEGIN TRY
     END;
 
     COMMIT TRANSACTION;
-    SELECT N'Đã thêm bộ Demo20' AS KetQua, 20 AS DongMoiMoiBangNghiepVu,
+    SELECT N'Đã thêm dữ liệu mẫu' AS KetQua, 20 AS DongMoiMoiBangNghiepVu,
            24 AS ChiTietPhieuNhap, 24 AS ChiTietHoaDon;
 END TRY
 BEGIN CATCH
