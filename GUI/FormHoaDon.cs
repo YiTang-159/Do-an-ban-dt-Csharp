@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
@@ -60,7 +60,9 @@ namespace QuanLyBanDienThoai.GUI
             btnInHD.Click += btnInHD_Click;
 
             pnlTim.Controls.Add(UiHelper.Nhan("Tìm kiếm:", 10, 8));
-            pnlTim.Controls.AddRange(new Control[] { txtTim, btnTim, btnTatCa, chkCuaToi, btnXuatExcel, btnInHD });
+            Button btnNangCao = UiHelper.Nut("Tìm nâng cao", 810, 8, 110);
+            btnNangCao.Click += btnNangCao_Click;
+            pnlTim.Controls.AddRange(new Control[] { txtTim, btnTim, btnTatCa, chkCuaToi, btnXuatExcel, btnInHD, btnNangCao });
 
             dgvHD = ListViewHelper.Tao();
             dgvHD.SelectedIndexChanged += (s, e) => NapChiTiet();
@@ -110,6 +112,21 @@ namespace QuanLyBanDienThoai.GUI
             HoaDon hd = ListViewHelper.Chon<HoaDon>(dgvHD);
             ArrayList ct = hd == null ? new ArrayList() : bus.GetChiTiet(hd.MaHD);
             ListViewHelper.Gan(dgvCT, ct, "MaDT|Mã", "TenHienThi|Điện thoại", "SoLuong|Số lượng", "DonGia|Đơn giá", "TenKM|Khuyến mãi", "ThanhTien|Thành tiền");
+        }
+
+        private void btnNangCao_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (FormTimNangCao f = new FormTimNangCao(typeof(HoaDon)))
+                {
+                    if (f.ShowDialog() != DialogResult.OK) return;
+                    ArrayList ds = bus.TimNangCao(f.KetQua);
+                    if (chkCuaToi.Checked) ds = bus.LocCuaToi(ds);
+                    HienDanhSach(ds);
+                }
+            }
+            catch (Exception ex) { UiHelper.Loi(ex.Message); }
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)

@@ -41,15 +41,23 @@ namespace QuanLyBanDienThoai.BUS
             if (x.MaHang <= 0) return "Hãy chọn hãng điện thoại";
             if (x.MaLoai <= 0) return "Hãy chọn loại điện thoại";
 
+            // NamRaMat = 0 nghĩa là chưa có thông tin (cột cho phép NULL): bỏ qua kiểm tra khoảng năm
             int namToiThieu = (int)ThamSoBUS.LayGiaTri("NamRaMatToiThieu");
             int namHienTai = DateTime.Now.Year;
-            if (x.NamRaMat < namToiThieu || x.NamRaMat > namHienTai)
+            if (x.NamRaMat != 0 && (x.NamRaMat < namToiThieu || x.NamRaMat > namHienTai))
                 return "Năm ra mắt phải từ " + namToiThieu + " đến " + namHienTai;
 
             if (x.RAM <= 0) return "RAM phải lớn hơn 0";
             if (x.BoNho <= 0) return "Bộ nhớ phải lớn hơn 0";
             if (x.GiaNiemYet <= 0) return "Giá niêm yết phải lớn hơn 0";
-            if (x.SoLuongTon < 0) return "Số lượng tồn không được âm";
+            foreach (object o in dao.GetAll())
+            {
+                DienThoai d = (DienThoai)o;
+                if (d.MaDT != x.MaDT && d.RAM == x.RAM && d.BoNho == x.BoNho
+                    && string.Equals((d.TenDT ?? "").Trim(), x.TenDT, StringComparison.CurrentCultureIgnoreCase)
+                    && string.Equals((d.MauSac ?? "").Trim(), x.MauSac, StringComparison.CurrentCultureIgnoreCase))
+                    return "Đã có điện thoại cùng tên, RAM, bộ nhớ và màu sắc (mã " + d.MaDT + ")";
+            }
             return "";
         }
 

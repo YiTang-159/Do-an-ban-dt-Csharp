@@ -32,6 +32,12 @@ namespace QuanLyBanDienThoai.BUS
             x.TenLoai = (x.TenLoai ?? "").Trim();
             x.MoTa = (x.MoTa ?? "").Trim();
             if (x.TenLoai == "") return "Tên loại không được để trống";
+            foreach (object o in dao.GetAll())
+            {
+                LoaiDienThoai l = (LoaiDienThoai)o;
+                if (l.MaLoai != x.MaLoai && string.Equals((l.TenLoai ?? "").Trim(), x.TenLoai, StringComparison.CurrentCultureIgnoreCase))
+                    return "Tên loại \"" + x.TenLoai + "\" đã tồn tại";
+            }
             return "";
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Data;
 using QuanLyBanDienThoai.DTO;
@@ -27,6 +27,11 @@ namespace QuanLyBanDienThoai.DAO
             SELECT_SQL+"WHERE h.MaKH=@p0 ORDER BY b.NgayBatDau DESC,b.MaBH",new object[]{maKH}));
         public bool CoTrongHoaDon(int maHD,int maDT) => Convert.ToInt32(MyConnection.ExecuteScalar(
             "SELECT COUNT(*) FROM CHITIETHOADON WHERE MaHD=@p0 AND MaDT=@p1",new object[]{maHD,maDT}))>0;
+        // Số máy đã mua của (hóa đơn, điện thoại); 0 nếu không có
+        public int SoLuongDaMua(int maHD,int maDT)=>Convert.ToInt32(MyConnection.ExecuteScalar(
+            "SELECT ISNULL(SUM(SoLuong),0) FROM CHITIETHOADON WHERE MaHD=@p0 AND MaDT=@p1",new object[]{maHD,maDT}));
+        public DateTime NgayLapHoaDon(int maHD)=>Convert.ToDateTime(MyConnection.ExecuteScalar(
+            "SELECT NgayLap FROM HOADON WHERE MaHD=@p0",new object[]{maHD}));
         public int Insert(BaoHanh x)=>MyConnection.ExecuteNonQuery(
             "INSERT INTO BAOHANH(SoIMEI,NgayBatDau,NgayKetThuc,TrangThai,GhiChu,MaHD,MaDT) VALUES(@p0,@p1,@p2,@p3,@p4,@p5,@p6)",
             new object[]{x.SoIMEI,x.NgayBatDau.Date,x.NgayKetThuc.Date,x.TrangThai,x.GhiChu,x.MaHD,x.MaDT});

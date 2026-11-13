@@ -6,6 +6,20 @@ using QuanLyBanDienThoai.DAO;
 using QuanLyBanDienThoai.DTO;
 namespace QuanLyBanDienThoai.BUS
 {
+    // Sắp xếp nhãn dạng "10 - Tên" theo số đứng đầu (2 trước 10), sau đó theo chữ; hậu tố " [năm]" được giữ nguyên
+    public class SoSanhNhan:IComparer<string>
+    {
+        private static int LayMa(string s)
+        {
+            int i=0;while(i<s.Length&&char.IsDigit(s[i]))i++;
+            int v;return i>0&&int.TryParse(s.Substring(0,i),out v)?v:int.MaxValue;
+        }
+        public int Compare(string a,string b)
+        {
+            int c=LayMa(a).CompareTo(LayMa(b));
+            return c!=0?c:string.Compare(a,b,StringComparison.CurrentCultureIgnoreCase);
+        }
+    }
     public class ThongKeBUS
     {
         private readonly ThongKeDAO dao=new ThongKeDAO();
@@ -22,9 +36,14 @@ namespace QuanLyBanDienThoai.BUS
             t.Columns.Add("DoiTuong",typeof(string));
             for(int q=1;q<=4;q++)t.Columns.Add("Q"+q,typeof(decimal));
             t.Columns.Add("TC",typeof(decimal));
-            SortedDictionary<string,decimal[]> buckets=new SortedDictionary<string,decimal[]>(StringComparer.CurrentCultureIgnoreCase);
+            // Nếu dữ liệu trải nhiều năm thì mỗi đối tượng tách theo từng năm (tránh cộng gộp Q1 của nhiều năm)
+            HashSet<int> cacNam=new HashSet<int>();
+            foreach(DongThongKe x in list)cacNam.Add(x.Ngay.Year);
+            bool nhieuNam=cacNam.Count>1;
+            SortedDictionary<string,decimal[]> buckets=new SortedDictionary<string,decimal[]>(new SoSanhNhan());
             foreach(DongThongKe x in list) {
                 string ten=x.DoiTuong??"(Không tên)";
+                if(nhieuNam)ten+=" ["+x.Ngay.Year+"]";
                 if(!buckets.ContainsKey(ten))buckets[ten]=new decimal[4];
                 int q=(x.Ngay.Month-1)/3;
                 buckets[ten][q]+=x.SoTien;

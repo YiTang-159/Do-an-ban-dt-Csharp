@@ -122,3 +122,12 @@ docker compose down -v     # xóa container và toàn bộ dữ liệu
 ## Làm việc nhóm
 
 Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md](CONTRIBUTING.md). Sơ đồ CSDL: `ERD_CuaHangDienThoai.drawio.png`.
+
+## Ghi chú thiết kế (bổ sung)
+
+- **Tiếng Việt / chuỗi kết nối:** CSDL là SQL Server, cột chữ dùng `NVARCHAR` nên không cần thêm `?useUnicode=yes&characterEncoding=UTF-8` (tham số này dành cho MySQL/Java).
+- **Mật khẩu:** băm SHA-256 không salt, đủ cho đồ án học tập; hệ thống thật nên dùng bcrypt/PBKDF2 có salt.
+- **Tính duy nhất:** `UNIQUE` ở CSDL cho tên hãng, tên loại, tên khuyến mãi, bộ (TenDT, RAM, BoNho, MauSac); BUS kiểm tra trước để báo lỗi dễ hiểu.
+- **Hóa đơn:** khi lưu, BUS tính lại giá theo giá niêm yết và khuyến mãi hiện hành; nếu đã đổi thì yêu cầu thêm lại dòng.
+- **Nhập hàng:** nhân viên lập phiếu là người đang đăng nhập.
+- **Chạy lại script SQL** (`Database/QuanLyBanDienThoai.sql`) để áp dụng các ràng buộc UNIQUE mới.

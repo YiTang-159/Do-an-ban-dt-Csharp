@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -29,7 +29,7 @@ namespace QuanLyBanDienThoai.GUI
                     ChenBang(col,"1. Doanh thu theo nhân viên",k.TheoNhanVien);
                     ChenBang(col,"2. Doanh thu theo khách hàng",k.TheoKhachHang);
                     ChenBang(col,"3. Doanh thu theo sản phẩm",k.TheoSanPham);
-                    col.Item().Text("Ghi chú: Q1–Q4 là quý của năm; TC là tổng cộng. Nếu chọn nhiều năm, số liệu cùng quý được cộng gộp.").FontSize(8);
+                    col.Item().Text("Ghi chú: Q1–Q4 là quý của năm; TC là tổng cộng. Nếu chọn nhiều năm, mỗi đối tượng được tách thành từng dòng theo năm.").FontSize(8);
                 });
                 page.Footer().AlignCenter().Text(t=>{t.Span("Trang ");t.CurrentPageNumber();t.Span(" / ");t.TotalPages();});
             })).GeneratePdf(duongDan);

@@ -49,7 +49,7 @@ namespace QuanLyBanDienThoai.DAO
             return MyConnection.ExecuteNonQuery(
                 "INSERT INTO DIENTHOAI(TenDT, HeDieuHanh, NamRaMat, RAM, BoNho, MauSac, GiaNiemYet, SoLuongTon, MoTa, MaHang, MaLoai) " +
                 "VALUES(@p0, @p1, @p2, @p3, @p4, @p5, @p6, 0, @p7, @p8, @p9)",
-                new object[] { x.TenDT, x.HeDieuHanh, x.NamRaMat, x.RAM, x.BoNho, x.MauSac,
+                new object[] { x.TenDT, x.HeDieuHanh, x.NamRaMat == 0 ? null : (object)x.NamRaMat, x.RAM, x.BoNho, x.MauSac,
                                x.GiaNiemYet, x.MoTa, x.MaHang, x.MaLoai });
         }
 
@@ -59,7 +59,7 @@ namespace QuanLyBanDienThoai.DAO
             return MyConnection.ExecuteNonQuery(
                 "UPDATE DIENTHOAI SET TenDT = @p0, HeDieuHanh = @p1, NamRaMat = @p2, RAM = @p3, BoNho = @p4, " +
                 "MauSac = @p5, GiaNiemYet = @p6, MoTa = @p7, MaHang = @p8, MaLoai = @p9 WHERE MaDT = @p10",
-                new object[] { x.TenDT, x.HeDieuHanh, x.NamRaMat, x.RAM, x.BoNho, x.MauSac,
+                new object[] { x.TenDT, x.HeDieuHanh, x.NamRaMat == 0 ? null : (object)x.NamRaMat, x.RAM, x.BoNho, x.MauSac,
                                x.GiaNiemYet, x.MoTa, x.MaHang, x.MaLoai, x.MaDT });
         }
 

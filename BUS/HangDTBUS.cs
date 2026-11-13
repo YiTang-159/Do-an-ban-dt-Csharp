@@ -34,6 +34,12 @@ namespace QuanLyBanDienThoai.BUS
             x.TenHang = (x.TenHang ?? "").Trim();
             x.QuocGia = (x.QuocGia ?? "").Trim();
             if (x.TenHang == "") return "Tên hãng không được để trống";
+            foreach (object o in dao.GetAll())
+            {
+                HangDT h = (HangDT)o;
+                if (h.MaHang != x.MaHang && string.Equals((h.TenHang ?? "").Trim(), x.TenHang, StringComparison.CurrentCultureIgnoreCase))
+                    return "Tên hãng \"" + x.TenHang + "\" đã tồn tại";
+            }
             return "";
         }
 

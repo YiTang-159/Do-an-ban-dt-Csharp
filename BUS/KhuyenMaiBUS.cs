@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using QuanLyBanDienThoai.DAO;
@@ -17,6 +17,9 @@ namespace QuanLyBanDienThoai.BUS
             x.TenKM=(x.TenKM??"").Trim();x.MoTa=(x.MoTa??"").Trim();
             if(x.TenKM.Length==0)return "Tên khuyến mãi không được trống";
             if(x.NgayKetThuc.Date<x.NgayBatDau.Date)return "Ngày kết thúc phải từ ngày bắt đầu trở đi";
+            foreach(KhuyenMai k in GetAll())
+                if(k.MaKM!=x.MaKM&&string.Equals((k.TenKM??"").Trim(),x.TenKM,StringComparison.CurrentCultureIgnoreCase))
+                    return "Tên khuyến mãi đã tồn tại";
             return "";
         }
         public string Them(KhuyenMai x)=>Ghi(x,false);

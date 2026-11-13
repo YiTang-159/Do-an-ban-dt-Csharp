@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -30,9 +30,16 @@ namespace QuanLyBanDienThoai.BUS
             if(x.TrangThai.Length==0)return "Phải chọn trạng thái bảo hành";
             try {
                 if(!dao.CoTrongHoaDon(x.MaHD,x.MaDT))return "Điện thoại không thuộc hóa đơn đã chọn";
+                if(x.NgayBatDau.Date<dao.NgayLapHoaDon(x.MaHD).Date)return "Ngày bắt đầu bảo hành không được trước ngày lập hóa đơn";
+                int daDangKy=0;
                 foreach(BaoHanh b in dao.GetAll())
+                {
                     if(string.Equals(b.SoIMEI,x.SoIMEI,StringComparison.OrdinalIgnoreCase) && (!sua||b.MaBH!=x.MaBH))
                         return "IMEI này đã được đăng ký bảo hành";
+                    if(b.MaHD==x.MaHD && b.MaDT==x.MaDT && (!sua||b.MaBH!=x.MaBH)) daDangKy++;
+                }
+                int daMua=dao.SoLuongDaMua(x.MaHD,x.MaDT);
+                if(daDangKy+1>daMua)return "Hóa đơn chỉ mua "+daMua+" máy này, đã có "+daDangKy+" phiếu bảo hành";
                 return "";
             }catch(Exception ex){return "Lỗi kiểm tra bảo hành: "+ex.Message;}
         }

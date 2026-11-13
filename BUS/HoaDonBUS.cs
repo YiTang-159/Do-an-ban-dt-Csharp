@@ -31,6 +31,12 @@ namespace QuanLyBanDienThoai.BUS
             return TimKiemHelper.TimTuKhoa(dao.GetAll(), tuKhoa, "MaHD", "TenKhachHang", "TenNhanVien", "PhuongThucTT");
         }
 
+        // Tìm kiếm nâng cao (and, or, not, >, >=, <, <=, <>) trên ArrayList
+        public ArrayList TimNangCao(List<DieuKien> dieuKien)
+        {
+            return TimKiemHelper.Loc(dao.GetAll(), dieuKien);
+        }
+
         // Giữ lại các hóa đơn do nhân viên đang đăng nhập lập
         public ArrayList LocCuaToi(ArrayList ds)
         {
@@ -150,6 +156,34 @@ namespace QuanLyBanDienThoai.BUS
             return loiChung;
         }
 
+        private string KiemTraLaiGia(ArrayList dong)
+        {
+            ArrayList dsDT = new DienThoaiDAO().GetAll();
+            ArrayList dsKM = GiaBanHelper.LayKhuyenMaiApDung();
+            foreach (object o in dong)
+            {
+                ChiTietHoaDon ct = (ChiTietHoaDon)o;
+                DienThoai dt = null;
+                foreach (object x in dsDT) { if (((DienThoai)x).MaDT == ct.MaDT) { dt = (DienThoai)x; break; } }
+                if (dt == null) return "Không tìm thấy điện thoại mã " + ct.MaDT;
+                decimal phanTram = 0;
+                if (ct.MaKM.HasValue)
+                {
+                    bool thay = false;
+                    foreach (object x in dsKM)
+                    {
+                        KhuyenMaiApDung km = (KhuyenMaiApDung)x;
+                        if (km.MaKM == ct.MaKM.Value && km.MaDT == ct.MaDT) { phanTram = km.PhanTramGiam; thay = true; break; }
+                    }
+                    if (!thay) return dt.TenHienThi + ": khuyến mãi đã hết hiệu lực, hãy xóa dòng và thêm lại";
+                }
+                decimal thanhTien = GiaBanHelper.ThanhTien(dt.GiaNiemYet, phanTram, ct.SoLuong);
+                if (ct.DonGia != dt.GiaNiemYet || ct.ThanhTien != thanhTien)
+                    return dt.TenHienThi + ": giá đã thay đổi, hãy xóa dòng và thêm lại để lấy giá mới";
+            }
+            return "";
+        }
+
         public decimal TinhTongDong(ArrayList dong)
         {
             decimal tong = 0;
@@ -171,6 +205,11 @@ namespace QuanLyBanDienThoai.BUS
 
             try
             {
+                // Tính lại giá từng dòng theo giá niêm yết và khuyến mãi HIỆN HÀNH, tránh lưu giá cũ
+                // khi giá/khuyến mãi đổi giữa lúc nhân viên đang lập hóa đơn.
+                string loiGia = KiemTraLaiGia(dong);
+                if (loiGia != "") return loiGia;
+
                 HoaDon hd = new HoaDon();
                 hd.NgayLap = DateTime.Now;
                 hd.PhuongThucTT = phuongThucTT.Trim();
