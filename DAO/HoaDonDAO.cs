@@ -125,11 +125,14 @@ namespace QuanLyBanDienThoai.DAO
 
                             if (xoaGioHang)
                             {
-                                string sqlGio = "DELETE FROM GIOHANG WHERE MaKH = @p0 AND MaDT = @p1";
+                                // Không xóa mù: khách có thể sửa số lượng trong lúc nhân viên đang lập hóa đơn.
+                                // Chỉ xóa khi số lượng ở giỏ còn khớp với dòng đã được xác nhận.
+                                string sqlGio = "DELETE FROM GIOHANG WHERE MaKH = @p0 AND MaDT = @p1 AND SoLuong = @p2";
                                 using (SqlCommand cmd = new SqlCommand(sqlGio, conn, tran))
                                 {
-                                    MyConnection.GanThamSo(cmd, sqlGio, new object[] { hd.MaKH, ct.MaDT });
-                                    cmd.ExecuteNonQuery();
+                                    MyConnection.GanThamSo(cmd, sqlGio, new object[] { hd.MaKH, ct.MaDT, ct.SoLuong });
+                                    if (cmd.ExecuteNonQuery() == 0)
+                                        throw new Exception("Giỏ hàng đã thay đổi (mã điện thoại " + ct.MaDT + "). Hãy nạp lại giỏ trước khi lập hóa đơn.");
                                 }
                             }
                         }

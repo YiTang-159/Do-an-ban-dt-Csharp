@@ -336,13 +336,13 @@ namespace QuanLyBanDienThoai.GUI
             ThemMuc(nBanHang, "Danh sách hóa đơn", () => new FormHoaDon());
             ThemMuc(nBanHang, "Giỏ hàng", () => new FormGioHang());
 
-            FlowLayoutPanel nThongKe = TaoNhom("Thống kê");
+            FlowLayoutPanel nThongKe = laAdmin ? TaoNhom("Thống kê") : null;
             // TV4
-            ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
+            if (laAdmin) ThemMuc(nThongKe, "Thống kê thu chi", () => new FormThongKe());
 
-            FlowLayoutPanel nThamSo = TaoNhom("Tham số");
+            FlowLayoutPanel nThamSo = laAdmin ? TaoNhom("Tham số") : null;
             // TV2
-            ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
+            if (laAdmin) ThemMuc(nThamSo, "Bảng tham số", () => new FormThamSo());
 
             // ---- Chỉ Admin ----
             if (laAdmin)

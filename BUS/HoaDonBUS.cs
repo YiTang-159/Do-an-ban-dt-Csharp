@@ -202,6 +202,16 @@ namespace QuanLyBanDienThoai.BUS
             if (new KhachHangBUS().GetById(maKH) == null) return "Không tìm thấy khách hàng";
             if (dong == null || dong.Count == 0) return "Hóa đơn phải có ít nhất một điện thoại";
             if (string.IsNullOrWhiteSpace(phuongThucTT)) return "Hãy chọn phương thức thanh toán";
+            phuongThucTT = phuongThucTT.Trim();
+            if (phuongThucTT != "Tiền mặt" && phuongThucTT != "Chuyển khoản" && phuongThucTT != "Thẻ")
+                return "Phương thức thanh toán không hợp lệ";
+            var maDaCo = new HashSet<int>();
+            foreach (object o in dong)
+            {
+                if (!(o is ChiTietHoaDon ct) || ct.MaDT <= 0 || ct.SoLuong <= 0 || ct.DonGia <= 0 || ct.ThanhTien < 0)
+                    return "Chi tiết hóa đơn không hợp lệ";
+                if (!maDaCo.Add(ct.MaDT)) return "Một điện thoại không được lặp trong hóa đơn";
+            }
 
             try
             {

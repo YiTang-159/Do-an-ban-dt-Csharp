@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -6,6 +7,7 @@ using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.Web.Pages;
 
+[Authorize(Roles = "Admin")]
 public class IndexModel(HangDTBUS bus, ILogger<IndexModel> logger) : PageModel
 {
     [BindProperty(SupportsGet = true)]
