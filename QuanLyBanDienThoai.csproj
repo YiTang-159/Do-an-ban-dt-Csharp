@@ -1,21 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<UseWindowsForms>true</UseWindowsForms>
-		<Nullable>disable</Nullable>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<RootNamespace>QuanLyBanDienThoai</RootNamespace>
-		<DefaultItemExcludes>$(DefaultItemExcludes);Web/**</DefaultItemExcludes>
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>QuanLyBanDienThoai</RootNamespace>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Compile Remove="Web\**\*.cs" />
-		<PackageReference Include="NPOI" Version="2.7.2" />
-		<PackageReference Include="ClosedXML" Version="0.102.2" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-		<PackageReference Include="QuestPDF" Version="2024.12.1" />
-	</ItemGroup>
+  <ItemGroup>
+    <!-- ClosedXML: đọc/ghi file Excel (.xlsx) cho ExcelHelper -->
+    <PackageReference Include="NPOI" Version="2.7.2" />
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="QuestPDF" Version="2024.12.1" />
+  </ItemGroup>
 
 </Project>
