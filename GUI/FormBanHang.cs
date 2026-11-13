@@ -18,7 +18,6 @@ namespace QuanLyBanDienThoai.GUI
         private SanPhamBanBUS spBus = new SanPhamBanBUS();
 
         private ArrayList dong = new ArrayList();      // các ChiTietHoaDon đang lập
-        private bool tuGioHang = false;                // có dòng nào nạp từ giỏ hàng không
         private int maKH = 0;
         private bool dangNap = false;
 
@@ -177,10 +176,13 @@ namespace QuanLyBanDienThoai.GUI
         private void DatKhach(KhachHang kh)
         {
             // Đổi khách thì bỏ các dòng đã nạp từ giỏ của khách trước
-            if (maKH != kh.MaKH && tuGioHang)
+            if (maKH != kh.MaKH)
             {
-                dong.Clear();
-                tuGioHang = false;
+                for (int i = dong.Count - 1; i >= 0; i--)
+                {
+                    if (((ChiTietHoaDon)dong[i]).MaKhachGioHang.HasValue)
+                        dong.RemoveAt(i);
+                }
                 CapNhatLuoi();
             }
             maKH = kh.MaKH;
@@ -227,9 +229,7 @@ namespace QuanLyBanDienThoai.GUI
         private void btnLayGio_Click(object sender, EventArgs e)
         {
             if (maKH <= 0) { MessageBox.Show("Hãy chọn khách hàng trước"); return; }
-            int soDongTruoc = dong.Count;
             string loi = bus.NapTuGioHang(maKH, dong);
-            if (dong.Count > soDongTruoc) tuGioHang = true;
             CapNhatLuoi();
             if (loi != "") MessageBox.Show(loi, "Một số dòng chưa nạp được", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
@@ -250,7 +250,7 @@ namespace QuanLyBanDienThoai.GUI
                 "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             int maHD;
-            string loi = bus.LuuHoaDon(maKH, cboPTTT.Text, dong, tuGioHang, out maHD);
+            string loi = bus.LuuHoaDon(maKH, cboPTTT.Text, dong, out maHD);
             if (loi != "") { UiHelper.Loi(loi); return; }
             MessageBox.Show("Đã lập hóa đơn số " + maHD + ". Tồn kho và điểm tích lũy đã được cập nhật.", "Thành công");
             LamMoi();
@@ -259,7 +259,6 @@ namespace QuanLyBanDienThoai.GUI
         private void LamMoi()
         {
             dong.Clear();
-            tuGioHang = false;
             maKH = 0;
             txtKhach.Clear();
             cboPTTT.SelectedIndex = 0;

@@ -54,7 +54,7 @@ namespace QuanLyBanDienThoai.GUI
         private NumericUpDown numSLGio;
         private Label lblTongGio;
 
-        private DataGridView dgvHD, dgvCT;
+        private ListView lvDonMua, lvChiTietDon;
         private Label lblTongDon;
 
         private DataGridView dgvBH;
@@ -684,20 +684,15 @@ namespace QuanLyBanDienThoai.GUI
         {
             Panel t = TaoTrang();
 
-            dgvHD = new DataGridView();
-            dgvHD.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvHD);
-            dgvHD.SelectionChanged += (s, e) => NapChiTietDon();
-
-            dgvCT = new DataGridView();
-            dgvCT.Dock = DockStyle.Fill;
-            GridHelper.CauHinh(dgvCT);
+            lvDonMua = ListViewHelper.Tao();
+            lvChiTietDon = ListViewHelper.Tao();
+            lvDonMua.SelectedIndexChanged += (s, e) => NapChiTietDon();
 
             SplitContainer sc = new SplitContainer();
             sc.Dock = DockStyle.Fill;
             sc.Orientation = Orientation.Horizontal;
-            sc.Panel1.Controls.Add(dgvHD);
-            sc.Panel2.Controls.Add(dgvCT);
+            sc.Panel1.Controls.Add(lvDonMua);
+            sc.Panel2.Controls.Add(lvChiTietDon);
 
             lblTongDon = new Label();
             lblTongDon.Dock = DockStyle.Bottom;
@@ -713,29 +708,20 @@ namespace QuanLyBanDienThoai.GUI
         private void NapDonMua()
         {
             ArrayList ds = hdBus.GetCuaToi();
-            GridHelper.GanDuLieu(dgvHD, ds, typeof(HoaDon));
-            UiHelper.Giau(dgvHD, "MaKH", "MaNV", "TenKhachHang");
-            UiHelper.TieuDe(dgvHD, "MaHD", "Mã hóa đơn");
-            UiHelper.TieuDe(dgvHD, "NgayLap", "Ngày lập");
-            UiHelper.TieuDe(dgvHD, "PhuongThucTT", "Thanh toán");
-            UiHelper.TieuDe(dgvHD, "TongTien", "Tổng tiền");
-            UiHelper.TieuDe(dgvHD, "TenNhanVien", "Nhân viên phục vụ");
+            ListViewHelper.Gan(lvDonMua, ds,
+                "MaHD|Mã hóa đơn", "NgayLap|Ngày lập", "PhuongThucTT|Thanh toán",
+                "TongTien|Tổng tiền", "TenNhanVien|Nhân viên phục vụ");
             lblTongDon.Text = "  Tổng " + ds.Count + " đơn, tổng chi tiêu: " + UiHelper.Tien(hdBus.TinhTongTien(ds));
             NapChiTietDon();
         }
 
         private void NapChiTietDon()
         {
-            HoaDon hd = UiHelper.DongDangChon<HoaDon>(dgvHD);
+            HoaDon hd = ListViewHelper.Chon<HoaDon>(lvDonMua);
             ArrayList ct = hd == null ? new ArrayList() : hdBus.GetChiTietCuaToi(hd.MaHD);
-            GridHelper.GanDuLieu(dgvCT, ct, typeof(ChiTietHoaDon));
-            UiHelper.Giau(dgvCT, "MaHD", "MaKM");
-            UiHelper.TieuDe(dgvCT, "MaDT", "Mã");
-            UiHelper.TieuDe(dgvCT, "TenHienThi", "Điện thoại");
-            UiHelper.TieuDe(dgvCT, "SoLuong", "Số lượng");
-            UiHelper.TieuDe(dgvCT, "DonGia", "Đơn giá");
-            UiHelper.TieuDe(dgvCT, "TenKM", "Khuyến mãi");
-            UiHelper.TieuDe(dgvCT, "ThanhTien", "Thành tiền");
+            ListViewHelper.Gan(lvChiTietDon, ct,
+                "MaDT|Mã", "TenHienThi|Điện thoại", "SoLuong|Số lượng",
+                "DonGia|Đơn giá", "TenKM|Khuyến mãi", "ThanhTien|Thành tiền");
         }
 
         // ===================== Tab 4: Bảo hành =====================

@@ -46,7 +46,7 @@ namespace QuanLyBanDienThoai.GUI
             {
                 DataGridViewTextBoxColumn col = new DataGridViewTextBoxColumn();
                 col.DataPropertyName = c;
-                col.HeaderText = c;
+                col.HeaderText = TieuDe(c);
                 col.Name = "col" + c;
                 dgv.Columns.Add(col);
             }
@@ -92,6 +92,31 @@ namespace QuanLyBanDienThoai.GUI
             Controls.Add(pnlTim);
 
             HienDanhSach();
+        }
+
+        // Tên thuộc tính -> tiêu đề cột tiếng Việt (không có trong bảng thì giữ nguyên tên)
+        private static string TieuDe(string ten)
+        {
+            switch (ten)
+            {
+                case "MaKH": return "Mã KH";
+                case "MaNV": return "Mã NV";
+                case "MaDT": return "Mã ĐT";
+                case "MaNCC": return "Mã NCC";
+                case "MaHD": return "Mã hóa đơn";
+                case "HoTen": return "Họ tên";
+                case "TenNCC": return "Nhà cung cấp";
+                case "TenHienThi": return "Điện thoại";
+                case "TenDT": return "Điện thoại";
+                case "TenHang": return "Hãng";
+                case "SDT": return "Số điện thoại";
+                case "DiaChi": return "Địa chỉ";
+                case "GiaNiemYet": return "Giá niêm yết";
+                case "GiaSauGiam": return "Giá sau giảm";
+                case "SoLuongTon": return "Tồn kho";
+                case "TenKM": return "Khuyến mãi";
+                default: return ten;
+            }
         }
 
         // Dùng ngắn gọn: trả về đối tượng được chọn, null nếu hủy

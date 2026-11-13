@@ -183,7 +183,17 @@ namespace QuanLyBanDienThoai.BUS
         {
             if (phepToan == "chứa")
             {
-                return BoDau(ChuoiHoa(giaTri)).Contains(BoDau(nhap.Trim()));
+                string a = BoDau(ChuoiHoa(giaTri));
+                string b = BoDau(nhap.Trim());
+                if (a.Contains(b)) return true;
+                // Số: cho phép gõ 34.990.000 hoặc 34,990,000 để tìm 34990000
+                Type goc2 = Nullable.GetUnderlyingType(kieu) ?? kieu;
+                if (giaTri != null && LaKieuSo(goc2))
+                {
+                    string bSo = Regex.Replace(b, @"[.,\s]", "");
+                    return bSo != "" && a.Replace(".", "").Contains(bSo);
+                }
+                return false;
             }
 
             Type goc = Nullable.GetUnderlyingType(kieu) ?? kieu;

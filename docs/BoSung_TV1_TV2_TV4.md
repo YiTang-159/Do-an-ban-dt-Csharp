@@ -22,8 +22,8 @@ ExcelHelper vẫn giữ các hàm gọi cũ. Đuôi .xls được đọc/ghi b�
 - Danh sách phiếu nhập: thêm tổng tiền nhập theo danh sách hiển thị.
 
 ## TV4
-- Đổi khoảng ngày làm mất hiệu lực dữ liệu PDF cũ; phải bấm Thống kê lại trước khi xuất.
-- Chặn khoảng ngày vượt qua hai năm để tránh cộng gộp Q1–Q4 của nhiều năm vào cùng cột. Có thể chọn tháng/quý/năm bất kỳ bằng hai ô ngày trong cùng một năm.
+- Đổi khoảng ngày làm mất hiệu lực dữ liệu PDF cũ: nhãn và 3 bảng được xóa, phải bấm Thống kê lại trước khi xem hoặc xuất.
+- Khoảng ngày trải nhiều năm vẫn thống kê được: mỗi đối tượng được tách thành từng dòng theo năm (ví dụ "2 - Phạm Thị Dung [2026]"), nên Q1–Q4 của các năm khác nhau không bị cộng gộp.
 - Các chức năng khuyến mãi, chi tiết khuyến mãi, bảo hành và PDF thống kê giữ nguyên.
 
 ## Kiểm thử cần thực hiện trên Windows SQL Server
@@ -42,7 +42,7 @@ Tất cả mục dưới đây CHƯA được chạy thực tế trong môi trư
 | BS09 | Thêm dòng nhập rồi Làm mới | Xóa phiếu tạm, không ghi SQL | Chưa chạy |
 | BS10 | Lập phiếu nhập, mở danh sách | Tồn kho tăng; tổng tiền nhãn bằng tổng các phiếu | Chưa chạy |
 | BS11 | Thống kê rồi thay ngày, bấm PDF | Yêu cầu thống kê lại | Chưa chạy |
-| BS12 | Chọn khoảng qua hai năm | Báo chọn cùng năm | Chưa chạy |
+| BS12 | Chọn khoảng qua hai năm | Mỗi đối tượng tách dòng theo năm, TC cột đúng | Chưa chạy |
 | BS13 | Xem thống kê, xuất PDF | Tổng thu/chi, ba bảng, dấu tiếng Việt đúng | Chưa chạy |
 | BS14 | Chạy lại các ca khuyến mãi/bảo hành trong KiemThu.docx | Không lỗi hồi quy | Chưa chạy |
 | BS15 | Chạy bán hàng/giỏ hàng hiện có | Không lỗi do các hàm dùng chung thay đổi | Chưa chạy |

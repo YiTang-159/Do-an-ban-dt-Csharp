@@ -6,11 +6,6 @@ using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.BUS
 {
-    // ============================================================================
-    //  BẢN TỐI THIỂU (đủ để nhân viên lập hóa đơn và khách xem đơn mua). FILE NÀY THUỘC VỀ TV3.
-    //  Khi TV3 gộp HoaDonBUS thật thì giữ các hàm form đang gọi: GetAll, GetCuaToi, GetChiTiet, GetChiTietCuaToi,
-    //  TimKiem, LocCuaToi, TinhTongTien, GetKhuyenMaiApDung, TaoDong, NapTuGioHang, TinhTongDong, LuuHoaDon.
-    // ============================================================================
     public class HoaDonBUS
     {
         private HoaDonDAO dao = new HoaDonDAO();
@@ -144,14 +139,32 @@ namespace QuanLyBanDienThoai.BUS
         // Dòng nào lỗi thì bỏ qua và ghi vào chuỗi trả về; trả về "" nếu mọi dòng đều nạp được.
         public string NapTuGioHang(int maKH, ArrayList dong)
         {
-            ArrayList gio = gioBus.GetTheoKhachHang(maKH);
+            ArrayList gio;
+            try
+            {
+                gio = gioBus.GetTheoKhachHang(maKH);
+            }
+            catch (Exception ex)
+            {
+                return "Không thể tải giỏ hàng: " + ex.Message;
+            }
+
+            // Thay các dòng từ giỏ bằng dữ liệu hiện tại, giữ các dòng thêm tại quầy.
+            for (int i = dong.Count - 1; i >= 0; i--)
+            {
+                if (((ChiTietHoaDon)dong[i]).MaKhachGioHang.HasValue)
+                    dong.RemoveAt(i);
+            }
             if (gio.Count == 0) return "Khách hàng này chưa có hàng trong giỏ";
             string loiChung = "";
             foreach (object o in gio)
             {
                 GioHang g = (GioHang)o;
                 string loi = TaoDong(dong, g.MaDT, g.SoLuong, g.MaKM);
-                if (loi != "") loiChung += g.TenHienThi + ": " + loi + "\n";
+                if (loi == "")
+                    ((ChiTietHoaDon)dong[dong.Count - 1]).MaKhachGioHang = maKH;
+                else
+                    loiChung += g.TenHienThi + ": " + loi + "\n";
             }
             return loiChung;
         }
@@ -194,7 +207,7 @@ namespace QuanLyBanDienThoai.BUS
         // Lưu hóa đơn. Nhân viên lập hóa đơn là người đang đăng nhập (MaNV lấy từ phiên, không do form chọn).
         // Điểm tích lũy = tổng tiền / SoTienMotDiem (bảng THAMSO), làm tròn xuống.
         // Trả về "" nếu thành công và maHD là mã hóa đơn mới.
-        public string LuuHoaDon(int maKH, string phuongThucTT, ArrayList dong, bool tuGioHang, out int maHD)
+        public string LuuHoaDon(int maKH, string phuongThucTT, ArrayList dong, out int maHD)
         {
             maHD = 0;
             if (!PhienDangNhap.LaNhanSu || PhienDangNhap.MaNV <= 0) return "Chỉ nhân viên hoặc quản trị viên mới được lập hóa đơn";
@@ -210,6 +223,8 @@ namespace QuanLyBanDienThoai.BUS
             {
                 if (!(o is ChiTietHoaDon ct) || ct.MaDT <= 0 || ct.SoLuong <= 0 || ct.DonGia <= 0 || ct.ThanhTien < 0)
                     return "Chi tiết hóa đơn không hợp lệ";
+                if (ct.MaKhachGioHang.HasValue && ct.MaKhachGioHang.Value != maKH)
+                    return "Dòng giỏ hàng không thuộc khách đã chọn";
                 if (!maDaCo.Add(ct.MaDT)) return "Một điện thoại không được lặp trong hóa đơn";
             }
 
@@ -228,9 +243,10 @@ namespace QuanLyBanDienThoai.BUS
                 hd.MaNV = PhienDangNhap.MaNV;
 
                 decimal soTienMotDiem = ThamSoBUS.LayGiaTri("SoTienMotDiem");
-                int diem = soTienMotDiem > 0 ? (int)Math.Floor(hd.TongTien / soTienMotDiem) : 0;
+                decimal diemTho = soTienMotDiem > 0 ? Math.Floor(hd.TongTien / soTienMotDiem) : 0;
+                int diem = diemTho > 1000000 ? 1000000 : (int)diemTho;     // chặn trên để không tràn kiểu int
 
-                maHD = dao.LuuHoaDon(hd, dong, diem, tuGioHang);
+                maHD = dao.LuuHoaDon(hd, dong, diem);
                 return "";
             }
             catch (Exception ex)

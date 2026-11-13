@@ -32,7 +32,7 @@ namespace QuanLyBanDienThoai.GUI
             bar.Controls.Add(numNam);
             bar.Controls.Add(Tv4FormHelper.Nut("Thống kê",(s,e)=>Tai()));
             bar.Controls.Add(Tv4FormHelper.Nut("Xuất PDF",(s,e)=>InPdf()));
-            tu.ValueChanged+=(s,e)=>{data=null;};den.ValueChanged+=(s,e)=>{data=null;};
+            tu.ValueChanged+=(s,e)=>XoaKetQua();den.ValueChanged+=(s,e)=>XoaKetQua();
             FlowLayoutPanel summary=new FlowLayoutPanel{Dock=DockStyle.Top,Height=54,AutoScroll=true};
             foreach(Label lbl in new[]{thu,chi,loi}) {lbl.Font=new Font("Segoe UI",11,FontStyle.Bold);lbl.Margin=new Padding(15,13,25,0);summary.Controls.Add(lbl);}
             TabControl tabs=new TabControl{Dock=DockStyle.Fill};
@@ -58,7 +58,14 @@ namespace QuanLyBanDienThoai.GUI
             else if(kieu.SelectedIndex==2&&ky>=1) {b=new DateTime(nam,(ky-1)*3+1,1);e=b.AddMonths(3).AddDays(-1);}
             else if(kieu.SelectedIndex==3) {b=new DateTime(nam,1,1);e=new DateTime(nam,12,31);}
             else return;
-            tu.Value=b;den.Value=e;data=null;
+            tu.Value=b;den.Value=e;XoaKetQua();
+        }
+        // Đổi ngày/kỳ thì số liệu cũ không còn đúng: xóa nhãn và 3 bảng, bắt buộc bấm Thống kê lại
+        private void XoaKetQua()
+        {
+            data=null;
+            thu.Text="Tổng thu: (bấm Thống kê)";chi.Text="Tổng chi: (bấm Thống kê)";loi.Text="Lợi nhuận: (bấm Thống kê)";
+            nv.DataSource=null;kh.DataSource=null;sp.DataSource=null;
         }
         // Nạp danh sách tháng/quý theo kiểu thống kê; mặc định chọn tháng/quý hiện tại
         private void NapKy()

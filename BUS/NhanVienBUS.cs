@@ -5,11 +5,6 @@ using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.BUS
 {
-    // ============================================================================
-    //  BẢN TỐI THIỂU (GetAll, GetById, TimKiem). FILE NÀY THUỘC VỀ TV2.
-    //  Khi TV2 gộp NhanVienBUS thật (Them, Sua, Xoa, TimNangCao, kiểm tra tuổi...) thì lấy bản của TV2;
-    //  chỉ cần đảm bảo còn GetById(int).
-    // ============================================================================
     public class NhanVienBUS
     {
         private NhanVienDAO dao = new NhanVienDAO();

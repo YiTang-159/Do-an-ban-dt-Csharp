@@ -300,7 +300,7 @@ INSERT INTO KHACHHANG (Ho, Ten, SDT, Email, DiaChi, NgaySinh, DiemTichLuy) VALUE
 
 -- KM1 còn hiệu lực (dùng thử bán hàng); KM2 đã hết hạn (dùng thử báo "không áp dụng được")
 INSERT INTO KHUYENMAI (TenKM, NgayBatDau, NgayKetThuc, MoTa) VALUES   -- 1..2
-(N'Khuyến mãi quý 4', '2026-10-01', '2026-12-31', N'Giảm giá cuối năm'),
+(N'Khuyến mãi quý 4', '2026-10-01', '2027-06-30', N'Giảm giá cuối năm'),
 (N'Back to School', '2026-08-15', '2026-09-05', N'Giảm cho học sinh sinh viên');
 
 INSERT INTO CHITIETKHUYENMAI (MaKM, MaDT, PhanTramGiam) VALUES

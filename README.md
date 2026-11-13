@@ -49,6 +49,8 @@ Nếu máy có sẵn `sqlcmd`, có thể chạy bằng dòng lệnh:
 sqlcmd -S localhost,14333 -U sa -P "Qldt@12345" -C -i Database\QuanLyBanDienThoai.sql
 ```
 
+Sau đó mở tiếp `Database/TV2_BoSungRangBuoc.sql` và **Execute** (thêm các CHECK về SĐT và thành tiền phiếu nhập; chạy nhiều lần không lỗi). Có thể chạy thêm `docs/TV4_KiemTraDuLieu.sql` để đối chiếu dữ liệu.
+
 ### Bước 3. Cấu hình chuỗi kết nối
 
 Mở `DAO/MyConnection.cs`, sửa hằng `ChuoiKetNoi` cho khớp với server ở bước 1. Có hai cách:
@@ -72,6 +74,8 @@ ALTER ROLE db_owner ADD MEMBER qldt;
 
 Sau đó chỉ cần đổi `Data Source=localhost` thành `Data Source=localhost,14333` trong chuỗi kết nối.
 
+> **Cách gọn nhất:** đặt biến môi trường `QLDT_CONNECTION` bằng chuỗi kết nối của máy mình, chương trình sẽ ưu tiên dùng nó và không cần sửa mã nguồn.
+>
 > **Lưu ý:** chuỗi kết nối là cấu hình riêng của mỗi máy. Không commit dòng này lên Git (dùng `git add -p` và bỏ qua dòng đó), xem thêm [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Bước 4. Chạy chương trình

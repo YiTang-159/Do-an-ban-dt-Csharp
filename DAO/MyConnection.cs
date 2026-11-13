@@ -13,8 +13,19 @@ namespace QuanLyBanDienThoai.DAO
         // Máy nào dùng server khác thì tự sửa ở máy mình, KHÔNG commit dòng này (dùng git add -p).
         // SQL Server Express: Data Source=.\SQLEXPRESS;...
         // Tiếng Việt: cột chữ là NVARCHAR nên không cần thêm tham số mã hóa (useUnicode chỉ dành cho MySQL).
-        private const string ChuoiKetNoi =
+        // Có thể đặt biến môi trường QLDT_CONNECTION để dùng chuỗi kết nối riêng của máy mình
+        // (không phải sửa file này, không lo commit nhầm mật khẩu lên Git).
+        private const string ChuoiKetNoiMacDinh =
             @"Data Source=localhost,14333;Initial Catalog=QuanLyBanDienThoai;User Id=sa;Password=Qldt@12345;TrustServerCertificate=True";
+
+        private static string ChuoiKetNoi
+        {
+            get
+            {
+                string rieng = Environment.GetEnvironmentVariable("QLDT_CONNECTION");
+                return string.IsNullOrWhiteSpace(rieng) ? ChuoiKetNoiMacDinh : rieng;
+            }
+        }
         // Trả về SqlConnection MỚI, CHƯA MỞ. Nơi gọi tự Open() và Dispose().
         // Dùng khi cần tự làm transaction (LuuHoaDon, LuuPhieuNhap).
         public static SqlConnection TaoKetNoi()

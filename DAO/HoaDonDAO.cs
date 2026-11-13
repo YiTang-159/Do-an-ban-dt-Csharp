@@ -6,11 +6,6 @@ using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.DAO
 {
-    // ============================================================================
-    //  BẢN TỐI THIỂU (đủ để nhân viên lập hóa đơn và khách xem đơn mua). FILE NÀY THUỘC VỀ TV3.
-    //  Khi TV3 gộp HoaDonDAO thật thì giữ các hàm GetAll, GetTheoKhachHang, GetChiTiet, LuuHoaDon
-    //  với đúng chữ ký ở đây (HoaDonBUS và các form của phần đăng nhập đang gọi).
-    // ============================================================================
     public class HoaDonDAO
     {
         private const string SqlChon =
@@ -78,9 +73,9 @@ namespace QuanLyBanDienThoai.DAO
         //   1. thêm HOADON
         //   2. mỗi dòng: TRỪ SoLuongTon (UPDATE ... WHERE SoLuongTon >= @sl; không có dòng nào bị ảnh hưởng = hết hàng) rồi thêm CHITIETHOADON
         //   3. cộng DiemTichLuy cho khách
-        //   4. nếu hóa đơn lập từ giỏ hàng: xóa các dòng giỏ hàng đã mua
+        //   4. xóa các dòng giỏ hàng đã được nạp vào hóa đơn
         // Lỗi giữa chừng thì Rollback toàn bộ. Trả về MaHD mới; lỗi thì ném Exception (BUS bắt).
-        public int LuuHoaDon(HoaDon hd, ArrayList chiTiet, int diemCong, bool xoaGioHang)
+        public int LuuHoaDon(HoaDon hd, ArrayList chiTiet, int diemCong)
         {
             using (SqlConnection conn = MyConnection.TaoKetNoi())
             {
@@ -123,7 +118,7 @@ namespace QuanLyBanDienThoai.DAO
                                 cmd.ExecuteNonQuery();
                             }
 
-                            if (xoaGioHang)
+                            if (ct.MaKhachGioHang.HasValue)
                             {
                                 // Không xóa mù: khách có thể sửa số lượng trong lúc nhân viên đang lập hóa đơn.
                                 // Chỉ xóa khi số lượng ở giỏ còn khớp với dòng đã được xác nhận.

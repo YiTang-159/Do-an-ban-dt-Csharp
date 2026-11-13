@@ -6,11 +6,6 @@ using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.BUS
 {
-    // ============================================================================
-    //  BẢN TỐI THIỂU (GetAll, GetById, TimKiem, KiemTra, CapNhatThongTin). FILE NÀY THUỘC VỀ TV2.
-    //  Khi TV2 gộp KhachHangBUS thật (Them, Sua, Xoa, TimNangCao, nhập Excel) thì lấy bản của TV2;
-    //  chỉ cần đảm bảo còn GetById(int) và quy tắc kiểm tra dữ liệu ở KiemTra (TaiKhoanBUS dùng khi đăng ký).
-    // ============================================================================
     public class KhachHangBUS
     {
         private KhachHangDAO dao = new KhachHangDAO();

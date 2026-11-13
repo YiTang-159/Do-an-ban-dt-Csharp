@@ -119,10 +119,14 @@ namespace QuanLyBanDienThoai.BUS
             for (int i = 0; i < ds.Count; i++)
             {
                 DienThoai x = ds[i] as DienThoai;
-                if (x == null) continue;
                 string loi;
-                if (x.MaDT > 0 && maDaCo.Contains(x.MaDT)) loi = "Mã " + x.MaDT + " đã tồn tại";
-                else loi = Them(x);
+                if (x == null) loi = "Sai kiểu dữ liệu";
+                else if (x.MaDT > 0 && !maDaCo.Add(x.MaDT)) loi = "Mã " + x.MaDT + " đã tồn tại hoặc bị trùng trong file";
+                else
+                {
+                    x.MaDT = 0;     // mã do SQL Server tự sinh, giống Nhân viên/Khách hàng
+                    loi = Them(x);
+                }
 
                 if (loi == "")
                 {
