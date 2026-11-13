@@ -193,7 +193,7 @@ BEGIN TRY
            OR ((SELECT COUNT(*) FROM dbo.HOADON)<@MucTieu AND NOT EXISTS (
                SELECT 1 FROM dbo.DIENTHOAI WHERE MaDT=@MaDT AND SoLuongTon>1))
         BEGIN
-            INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Nhap,@GiaNhap*5,@MaNCC,@MaNV);
+            INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Nhap,0,@MaNCC,@MaNV);
             SET @MaPN=CONVERT(int,SCOPE_IDENTITY());
             INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN,MaDT,SoLuong,DonGiaNhap,ThanhTien)
             VALUES(@MaPN,@MaDT,5,@GiaNhap,@GiaNhap*5);
@@ -215,14 +215,14 @@ BEGIN TRY
             UPDATE dbo.DIENTHOAI SET SoLuongTon=SoLuongTon-1 WHERE MaDT=@MaDT AND SoLuongTon>0;
             IF @@ROWCOUNT=0
             BEGIN
-                INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Nhap,@GiaNhap*5,@MaNCC,@MaNV);
+                INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Nhap,0,@MaNCC,@MaNV);
                 SET @MaPN=CONVERT(int,SCOPE_IDENTITY());
                 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN,MaDT,SoLuong,DonGiaNhap,ThanhTien)
                 VALUES(@MaPN,@MaDT,5,@GiaNhap,@GiaNhap*5);
                 UPDATE dbo.DIENTHOAI SET SoLuongTon=SoLuongTon+4 WHERE MaDT=@MaDT;
             END;
             INSERT dbo.HOADON(NgayLap,PhuongThucTT,TongTien,MaKH,MaNV)
-            VALUES(@Ban,CHOOSE(1+@i%3,N'Tiền mặt',N'Chuyển khoản',N'Thẻ'),@Gia,@MaKH,@MaNV);
+            VALUES(@Ban,CHOOSE(1+@i%3,N'Tiền mặt',N'Chuyển khoản',N'Thẻ'),0,@MaKH,@MaNV);
             SET @MaHD=CONVERT(int,SCOPE_IDENTITY());
             INSERT dbo.CHITIETHOADON(MaHD,MaDT,SoLuong,DonGia,ThanhTien) VALUES(@MaHD,@MaDT,1,@Gia,@Gia);
             SET @Diem=CONVERT(int,CASE WHEN FLOOR(@Gia/@SoTien)>1000000 THEN 1000000 ELSE FLOOR(@Gia/@SoTien) END);
@@ -253,7 +253,7 @@ BEGIN TRY
         SELECT TOP (1) @MaDT=MaDT,@Gia=GiaNiemYet FROM dbo.DIENTHOAI ORDER BY MaDT;
         SELECT @MaNV=MIN(MaNV) FROM dbo.NHANVIEN;
         SELECT @MaNCC=MIN(MaNCC) FROM dbo.NHACUNGCAP;
-        INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Ngay,@Gia*5,@MaNCC,@MaNV);
+        INSERT dbo.PHIEUNHAPHANG(NgayNhap,TongTien,MaNCC,MaNV) VALUES(@Ngay,0,@MaNCC,@MaNV);
         SET @MaPN=CONVERT(int,SCOPE_IDENTITY());
         INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN,MaDT,SoLuong,DonGiaNhap,ThanhTien)
         VALUES(@MaPN,@MaDT,5,@Gia,@Gia*5);

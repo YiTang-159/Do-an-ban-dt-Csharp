@@ -348,98 +348,98 @@ INSERT dbo.CHITIETKHUYENMAI(MaKM, MaDT, PhanTramGiam) VALUES
 (@km19, @dt17, 8.00);
 
 -- 10-11. PHIEUNHAPHANG (20) và CHITIETPHIEUNHAPHANG
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260105 09:00:00', 70924000, @ncc1, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260105 09:00:00', 0, @ncc1, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt1, 7, 10132000, 70924000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260112 11:00:00', 38178000, @ncc2, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260112 11:00:00', 0, @ncc2, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt2, 9, 4242000, 38178000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260118 08:00:00', 59036000, @ncc3, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260118 08:00:00', 0, @ncc3, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt3, 5, 9352000, 46760000),
 (@pn, @dt2, 3, 4092000, 12276000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260203 10:00:00', 23330000, @ncc4, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260203 10:00:00', 0, @ncc4, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt4, 5, 4666000, 23330000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260220 11:00:00', 57214000, @ncc5, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260220 11:00:00', 0, @ncc5, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt5, 8, 4338000, 34704000),
 (@pn, @dt4, 5, 4502000, 22510000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260308 10:00:00', 54544000, @ncc6, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260308 10:00:00', 0, @ncc6, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt6, 7, 7792000, 54544000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260325 10:00:00', 226984000, @ncc7, @nv1);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260325 10:00:00', 0, @ncc7, @nv1);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt7, 8, 26232000, 209856000),
 (@pn, @dt4, 4, 4282000, 17128000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260410 08:00:00', 74736000, @ncc8, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260410 08:00:00', 0, @ncc8, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt8, 8, 9342000, 74736000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260422 11:00:00', 154284000, @ncc9, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260422 11:00:00', 0, @ncc9, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt9, 9, 14032000, 126288000),
 (@pn, @dt4, 6, 4666000, 27996000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260506 11:00:00', 184428000, @ncc10, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260506 11:00:00', 0, @ncc10, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt10, 9, 20492000, 184428000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260520 08:00:00', 77904000, @ncc11, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260520 08:00:00', 0, @ncc11, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt11, 9, 7192000, 64728000),
 (@pn, @dt4, 3, 4392000, 13176000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260608 11:00:00', 206478000, @ncc12, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260608 11:00:00', 0, @ncc12, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt12, 9, 22942000, 206478000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260625 11:00:00', 199560000, @ncc13, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260625 11:00:00', 0, @ncc13, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt13, 8, 22612000, 180896000),
 (@pn, @dt4, 4, 4666000, 18664000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260710 10:00:00', 53478000, @ncc14, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260710 10:00:00', 0, @ncc14, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt14, 9, 5942000, 53478000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260728 10:00:00', 174148000, @ncc15, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260728 10:00:00', 0, @ncc15, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt15, 8, 18392000, 147136000),
 (@pn, @dt4, 6, 4502000, 27012000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260812 11:00:00', 107960000, @ncc16, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260812 11:00:00', 0, @ncc16, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt16, 5, 21592000, 107960000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260830 11:00:00', 55918000, @ncc17, @nv1);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260830 11:00:00', 0, @ncc17, @nv1);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt17, 7, 5322000, 37254000),
 (@pn, @dt4, 4, 4666000, 18664000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260915 10:00:00', 37376000, @ncc18, @nv4);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20260915 10:00:00', 0, @ncc18, @nv4);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt18, 8, 4672000, 37376000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20261002 11:00:00', 71234000, @ncc19, @nv9);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20261002 11:00:00', 0, @ncc19, @nv9);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt19, 8, 7216000, 57728000),
 (@pn, @dt4, 3, 4502000, 13506000);
-INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20261020 08:00:00', 169936000, @ncc20, @nv19);
+INSERT dbo.PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) VALUES ('20261020 08:00:00', 0, @ncc20, @nv19);
 SET @pn = SCOPE_IDENTITY();
 INSERT dbo.CHITIETPHIEUNHAPHANG(MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (@pn, @dt20, 8, 21242000, 169936000);
 
 -- 12-14. HOADON (20), CHITIETHOADON và BAOHANH (20)
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260122 17:49:59', N'Tiền mặt', 56943000, @kh20, @nv20);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260122 17:49:59', N'Tiền mặt', 0, @kh20, @nv20);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt2, 2, 4990000, 9481000, @km18),
@@ -449,13 +449,13 @@ INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaD
 ('354500000000007', '20260122', '20270122', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt2),
 ('354500000000014', '20260122', '20270122', N'Đang bảo hành', N'Bảo hành chính hãng 12 tháng', @hd, @dt3),
 ('354500000000021', '20260122', '20270122', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt1);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260206 18:10:59', N'Chuyển khoản', 22781000, @kh13, @nv5);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260206 18:10:59', N'Chuyển khoản', 0, @kh13, @nv5);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt3, 2, 11990000, 22781000, @km18);
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000028', '20260206', '20270206', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt3);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260214 09:03:53', N'Thẻ', 23731000, @kh15, @nv13);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260214 09:03:53', N'Thẻ', 0, @kh15, @nv13);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt3, 1, 11990000, 11390500, @km18),
@@ -463,13 +463,13 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000035', '20260214', '20270214', N'Đã hoàn thành', N'Đã cập nhật phần mềm và trả máy', @hd, @dt3),
 ('354500000000042', '20260214', '20270214', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt1);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260309 18:19:28', N'Tiền mặt', 10580000, @kh11, @nv13);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260309 18:19:28', N'Tiền mặt', 0, @kh11, @nv13);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt5, 2, 5290000, 10580000, NULL);
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000049', '20260309', '20270309', N'Đang bảo hành', N'Bảo hành chính hãng 12 tháng', @hd, @dt5);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260402 15:38:14', N'Chuyển khoản', 40950000, @kh6, @nv2);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260402 15:38:14', N'Chuyển khoản', 0, @kh6, @nv2);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt6, 3, 9990000, 29970000, NULL),
@@ -477,7 +477,7 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000056', '20260402', '20270402', N'Đang bảo hành', N'Bảo hành 12 tháng tại cửa hàng', @hd, @dt6),
 ('354500000000063', '20260402', '20270402', N'Đã từ chối', N'Rơi vỡ do người dùng, từ chối bảo hành', @hd, @dt4);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260429 15:45:43', N'Thẻ', 40550000, @kh5, @nv1);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260429 15:45:43', N'Thẻ', 0, @kh5, @nv1);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt6, 3, 9990000, 29970000, NULL),
@@ -485,13 +485,13 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000070', '20260429', '20270428', N'Đã hoàn thành', N'Đã thay pin, trả máy cho khách', @hd, @dt6),
 ('354500000000077', '20260429', '20270428', N'Đã hoàn thành', N'Đã cập nhật phần mềm và trả máy', @hd, @dt5);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260518 16:26:55', N'Tiền mặt', 51271500, @kh17, @nv2);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260518 16:26:55', N'Tiền mặt', 0, @kh17, @nv2);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt9, 3, 17990000, 51271500, @km18);
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000084', '20260518', '20270518', N'Đang bảo hành', N'Bảo hành chính hãng 12 tháng', @hd, @dt9);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260605 16:50:33', N'Chuyển khoản', 88293000, @kh10, @nv11);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260605 16:50:33', N'Chuyển khoản', 0, @kh10, @nv11);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt1, 3, 12990000, 37021500, @km18),
@@ -499,7 +499,7 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000091', '20260605', '20270605', N'Đang bảo hành', N'Bảo hành 12 tháng tại cửa hàng', @hd, @dt1),
 ('354500000000098', '20260605', '20270605', N'Đang bảo hành', N'Bảo hành chính hãng 12 tháng', @hd, @dt9);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260627 16:43:36', N'Thẻ', 31970000, @kh2, @nv6);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260627 16:43:36', N'Thẻ', 0, @kh2, @nv6);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt8, 2, 10990000, 21980000, NULL),
@@ -507,7 +507,7 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000105', '20260627', '20270627', N'Đã từ chối', N'Rơi vỡ do người dùng, từ chối bảo hành', @hd, @dt8),
 ('354500000000112', '20260627', '20270627', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt6);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260714 10:06:43', N'Tiền mặt', 31960000, @kh1, @nv1);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260714 10:06:43', N'Tiền mặt', 0, @kh1, @nv1);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt8, 1, 10990000, 10990000, NULL),
@@ -515,53 +515,53 @@ INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000119', '20260714', '20270714', N'Đang bảo hành', N'Bảo hành 12 tháng tại cửa hàng', @hd, @dt8),
 ('354500000000126', '20260714', '20270714', N'Đang bảo hành', N'Kèm bảo hành rơi vỡ 6 tháng', @hd, @dt14);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260803 12:04:00', N'Chuyển khoản', 10580000, @kh8, @nv14);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260803 12:04:00', N'Chuyển khoản', 0, @kh8, @nv14);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt5, 2, 5290000, 10580000, NULL);
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000133', '20260803', '20270803', N'Đang bảo hành', N'Bảo hành 12 tháng tại cửa hàng', @hd, @dt5);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260830 13:38:13', N'Thẻ', 93460000, @kh3, @nv20);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260830 13:38:13', N'Thẻ', 0, @kh3, @nv20);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt17, 1, 6490000, 6490000, NULL),
 (@hd, @dt13, 3, 28990000, 86970000, NULL);
 INSERT dbo.BAOHANH(SoIMEI, NgayBatDau, NgayKetThuc, TrangThai, GhiChu, MaHD, MaDT) VALUES
 ('354500000000140', '20260830', '20270828', N'Đã hoàn thành', N'Đã cập nhật phần mềm và trả máy', @hd, @dt17);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260912 19:49:51', N'Tiền mặt', 67960000, @kh19, @nv2);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260912 19:49:51', N'Tiền mặt', 0, @kh19, @nv2);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt14, 2, 6990000, 13980000, NULL),
 (@hd, @dt16, 2, 26990000, 53980000, NULL);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260924 17:41:41', N'Chuyển khoản', 74960000, @kh14, @nv11);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20260924 17:41:41', N'Chuyển khoản', 0, @kh14, @nv11);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt7, 2, 31990000, 63980000, NULL),
 (@hd, @dt4, 2, 5490000, 10980000, NULL);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261008 08:01:17', N'Thẻ', 49980000, @kh18, @nv20);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261008 08:01:17', N'Thẻ', 0, @kh18, @nv20);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt10, 2, 24990000, 49980000, NULL);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261017 08:14:43', N'Tiền mặt', 24560000, @kh7, @nv5);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261017 08:14:43', N'Tiền mặt', 0, @kh7, @nv5);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt14, 2, 6990000, 13980000, NULL),
 (@hd, @dt5, 2, 5290000, 10580000, NULL);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261030 08:22:52', N'Chuyển khoản', 26562000, @kh4, @nv14);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261030 08:22:52', N'Chuyển khoản', 0, @kh4, @nv14);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt1, 1, 12990000, 12340500, @km18),
 (@hd, @dt2, 3, 4990000, 14221500, @km18);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261106 16:51:41', N'Thẻ', 17912400, @kh12, @nv5);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261106 16:51:41', N'Thẻ', 0, @kh12, @nv5);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt17, 3, 6490000, 17912400, @km19);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261110 11:47:40', N'Tiền mặt', 76751000, @kh16, @nv1);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261110 11:47:40', N'Tiền mặt', 0, @kh16, @nv1);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt12, 2, 26990000, 51281000, @km18),
 (@hd, @dt19, 3, 8490000, 25470000, NULL);
-INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261112 11:34:09', N'Chuyển khoản', 34911500, @kh9, @nv6);
+INSERT dbo.HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES ('20261112 11:34:09', N'Chuyển khoản', 0, @kh9, @nv6);
 SET @hd = SCOPE_IDENTITY();
 INSERT dbo.CHITIETHOADON(MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (@hd, @dt8, 1, 10990000, 10990000, NULL),

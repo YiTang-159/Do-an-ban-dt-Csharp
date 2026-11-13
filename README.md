@@ -125,7 +125,7 @@ docker compose down -v     # xóa container và toàn bộ dữ liệu
 
 ## Làm việc nhóm
 
-Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md](CONTRIBUTING.md). Sơ đồ CSDL: `ERD_CuaHangDienThoai.drawio.png`.
+Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md](CONTRIBUTING.md). Sơ đồ CSDL: [bản chỉnh sửa bằng draw.io](ERD_CuaHangDienThoai.drawio) và [bản xem PNG](ERD_CuaHangDienThoai.drawio.png).
 
 ## Ghi chú thiết kế (bổ sung)
 
@@ -135,3 +135,15 @@ Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md
 - **Hóa đơn:** khi lưu, BUS tính lại giá theo giá niêm yết và khuyến mãi hiện hành; nếu đã đổi thì yêu cầu thêm lại dòng.
 - **Nhập hàng:** nhân viên lập phiếu là người đang đăng nhập.
 - **Chạy lại script SQL** (`Database/QuanLyBanDienThoai.sql`) để áp dụng các ràng buộc UNIQUE mới.
+
+### Cập nhật khóa ngoại cho database đã có dữ liệu
+
+Dừng ứng dụng, mở và Execute `Database/CapNhat_KhoaNgoai_ERD.sql` trong SSMS, sau đó build và chạy mã nguồn v3. Script cài khóa ngoại và trigger trong một transaction, tính lại tổng chứng từ từ các dòng chi tiết và hoàn tác toàn bộ nếu dữ liệu chi tiết cũ vi phạm quy tắc. Với database thử nghiệm mới, chạy `Database/QuanLyBanDienThoai.sql` để tạo đủ schema, trigger và dữ liệu mẫu. Script tạo lại có lệnh DROP TABLE.
+
+### Kiểm thử và giải thích khi vấn đáp
+
+- Chạy `Database/KiemThu_RangBuoc_ERD.sql` trên database demo và xem tab Messages. Bốn ca thử dữ liệu sai đều dùng transaction và hoàn tác.
+- Hóa đơn và phiếu nhập bắt đầu có tổng bằng 0. Trigger tính lại tổng từ các dòng chi tiết trong cùng transaction lưu chứng từ. WinForms vẫn cập nhật tồn kho và điểm trong transaction của DAO.
+- SQL kiểm tra ngày lập hóa đơn nằm trong thời hạn khuyến mãi, tính thành tiền theo đơn giá lưu trên dòng và mức giảm, đồng thời khóa mức giảm đã dùng để giữ lịch sử. Muốn đổi mức giảm đã dùng thì tạo chương trình mới.
+- SQL kiểm tra số phiếu bảo hành theo cặp hóa đơn và điện thoại, kể cả thao tác nhiều dòng. Khi hai phiên ghi cạnh tranh, một phiên có thể phải thực hiện lại nếu SQL Server hủy giao dịch do deadlock.
+- Các kiểm tra bảo đảm IMEI đúng định dạng và duy nhất. Việc xác nhận IMEI của đúng máy vật lý cần dữ liệu IMEI theo từng máy từ khâu nhập hoặc bán.

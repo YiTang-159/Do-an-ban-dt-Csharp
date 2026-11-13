@@ -3,6 +3,7 @@
 --  16 bảng = 14 bảng ERD + THAMSO + TAIKHOAN (đăng nhập). Có thể chạy lại nhiều lần.
 --  Không có PHIENBAN, KHO, TONKHO: RAM, BoNho, MauSac, GiaNiemYet, SoLuongTon nằm trong DIENTHOAI.
 --  Khóa chính INT IDENTITY(1,1); bảng chi tiết dùng khóa chính kép.
+--  Đã gộp sẵn các CHECK của TV2_BoSungRangBuoc.sql (cùng tên CK_*_TV2) nên file đó chạy thêm cũng không bị trùng.
 -- ============================================================
 IF DB_ID(N'QuanLyBanDienThoai') IS NULL
     CREATE DATABASE QuanLyBanDienThoai;
@@ -102,6 +103,7 @@ CREATE TABLE NHANVIEN (
     NgayVaoLam DATE NULL CONSTRAINT DF_NV_NgayVaoLam DEFAULT GETDATE(),
     CONSTRAINT UQ_NV_SDT UNIQUE (SDT),
     CONSTRAINT UQ_NV_Email UNIQUE (Email),
+    CONSTRAINT CK_NV_SDT_TV2 CHECK (LEN(SDT) = 10 AND SDT LIKE '0%' AND SDT NOT LIKE '%[^0-9]%'),
     CONSTRAINT CK_NV_NgayVaoLam CHECK (NgayVaoLam IS NULL OR NgaySinh IS NULL OR NgayVaoLam >= NgaySinh)
 );
 
@@ -116,6 +118,7 @@ CREATE TABLE KHACHHANG (
     DiemTichLuy INT NOT NULL CONSTRAINT DF_KH_DiemTichLuy DEFAULT 0,
     CONSTRAINT UQ_KH_SDT UNIQUE (SDT),
     CONSTRAINT UQ_KH_Email UNIQUE (Email),
+    CONSTRAINT CK_KH_SDT_TV2 CHECK (LEN(SDT) = 10 AND SDT LIKE '0%' AND SDT NOT LIKE '%[^0-9]%'),
     CONSTRAINT CK_KH_DiemTichLuy CHECK (DiemTichLuy >= 0)
 );
 
@@ -162,7 +165,8 @@ CREATE TABLE CHITIETPHIEUNHAPHANG (
     CONSTRAINT FK_CTPN_DT FOREIGN KEY (MaDT) REFERENCES DIENTHOAI(MaDT),
     CONSTRAINT CK_CTPN_SoLuong CHECK (SoLuong > 0),
     CONSTRAINT CK_CTPN_DonGiaNhap CHECK (DonGiaNhap > 0),
-    CONSTRAINT CK_CTPN_ThanhTien CHECK (ThanhTien >= 0)
+    CONSTRAINT CK_CTPN_ThanhTien CHECK (ThanhTien >= 0),
+    CONSTRAINT CK_CTPN_ThanhTien_TV2 CHECK (ThanhTien = SoLuong * DonGiaNhap)
 );
 
 CREATE TABLE HOADON (
@@ -187,10 +191,11 @@ CREATE TABLE CHITIETHOADON (
     PRIMARY KEY (MaHD, MaDT),
     CONSTRAINT FK_CTHD_HD FOREIGN KEY (MaHD) REFERENCES HOADON(MaHD),
     CONSTRAINT FK_CTHD_DT FOREIGN KEY (MaDT) REFERENCES DIENTHOAI(MaDT),
-    CONSTRAINT FK_CTHD_KM FOREIGN KEY (MaKM) REFERENCES KHUYENMAI(MaKM),
+    CONSTRAINT FK_CTHD_CTKM FOREIGN KEY (MaKM, MaDT) REFERENCES CHITIETKHUYENMAI(MaKM, MaDT),
     CONSTRAINT CK_CTHD_SoLuong CHECK (SoLuong > 0),
     CONSTRAINT CK_CTHD_DonGia CHECK (DonGia > 0),
-    CONSTRAINT CK_CTHD_ThanhTien CHECK (ThanhTien >= 0)
+    CONSTRAINT CK_CTHD_ThanhTien CHECK (ThanhTien >= 0),
+    CONSTRAINT CK_CTHD_ThanhTien_Max CHECK (ThanhTien <= SoLuong * DonGia)   -- đã giảm giá thì không thể vượt SoLuong x DonGia
 );
 
 CREATE TABLE GIOHANG (
@@ -204,8 +209,7 @@ CREATE TABLE GIOHANG (
     CONSTRAINT CK_GH_SoLuong CHECK (SoLuong > 0)
 );
 
--- Hai khóa ngoại riêng: MaHD -> HOADON, MaDT -> DIENTHOAI.
--- Việc cặp (MaHD, MaDT) có trong CHITIETHOADON do BaoHanhBUS kiểm tra.
+-- Bảo hành phải thuộc một dòng hàng đã bán.
 CREATE TABLE BAOHANH (
     MaBH INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     SoIMEI VARCHAR(15) NOT NULL,
@@ -216,8 +220,7 @@ CREATE TABLE BAOHANH (
     MaHD INT NOT NULL,
     MaDT INT NOT NULL,
     CONSTRAINT UQ_BH_SoIMEI UNIQUE (SoIMEI),
-    CONSTRAINT FK_BH_HD FOREIGN KEY (MaHD) REFERENCES HOADON(MaHD),
-    CONSTRAINT FK_BH_DT FOREIGN KEY (MaDT) REFERENCES DIENTHOAI(MaDT),
+    CONSTRAINT FK_BH_CTHD FOREIGN KEY (MaHD, MaDT) REFERENCES CHITIETHOADON(MaHD, MaDT),
     CONSTRAINT CK_BH_IMEI CHECK (LEN(SoIMEI) = 15 AND SoIMEI NOT LIKE '%[^0-9]%'),
     CONSTRAINT CK_BH_Ngay CHECK (NgayKetThuc >= NgayBatDau)
 );
@@ -248,6 +251,153 @@ GO
 -- Mỗi nhân viên và mỗi khách hàng chỉ có tối đa một tài khoản
 CREATE UNIQUE INDEX UQ_TK_MaNV ON TAIKHOAN(MaNV) WHERE MaNV IS NOT NULL;
 CREATE UNIQUE INDEX UQ_TK_MaKH ON TAIKHOAN(MaKH) WHERE MaKH IS NOT NULL;
+GO
+
+CREATE OR ALTER TRIGGER dbo.TR_CHITIETHOADON_TongTien
+ON dbo.CHITIETHOADON
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF EXISTS (
+        SELECT 1 FROM inserted c
+        JOIN dbo.HOADON h WITH (UPDLOCK, HOLDLOCK) ON h.MaHD = c.MaHD
+        JOIN dbo.KHUYENMAI k WITH (HOLDLOCK) ON k.MaKM = c.MaKM
+        WHERE CONVERT(date, h.NgayLap) NOT BETWEEN k.NgayBatDau AND k.NgayKetThuc
+    )
+        THROW 50102, N'Ngày lập hóa đơn nằm ngoài thời hạn khuyến mãi.', 1;
+
+    IF EXISTS (
+        SELECT 1 FROM inserted c
+        LEFT JOIN dbo.CHITIETKHUYENMAI k WITH (HOLDLOCK) ON k.MaKM = c.MaKM AND k.MaDT = c.MaDT
+        WHERE c.ThanhTien <> ROUND(c.DonGia * c.SoLuong * (100 - COALESCE(k.PhanTramGiam, 0)) / 100, 0)
+    )
+        THROW 50104, N'Thành tiền không khớp đơn giá, số lượng và mức giảm.', 1;
+
+    IF EXISTS (
+        SELECT 1 FROM inserted c WHERE c.SoLuong <
+            (SELECT COUNT_BIG(*) FROM dbo.BAOHANH b WITH (UPDLOCK, HOLDLOCK)
+             WHERE b.MaHD = c.MaHD AND b.MaDT = c.MaDT)
+    )
+        THROW 50105, N'Số máy đã mua không thể ít hơn số bảo hành đã đăng ký.', 1;
+
+    UPDATE h SET TongTien = t.TongTien
+    FROM dbo.HOADON h
+    JOIN (SELECT MaHD FROM inserted UNION SELECT MaHD FROM deleted) a ON a.MaHD = h.MaHD
+    CROSS APPLY (
+        SELECT COALESCE(SUM(c.ThanhTien), 0) AS TongTien
+        FROM dbo.CHITIETHOADON c WITH (UPDLOCK, HOLDLOCK) WHERE c.MaHD = h.MaHD
+    ) t;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_CHITIETPHIEUNHAPHANG_TongTien
+ON dbo.CHITIETPHIEUNHAPHANG
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE h SET TongTien = t.TongTien
+    FROM dbo.PHIEUNHAPHANG h
+    JOIN (SELECT MaPN FROM inserted UNION SELECT MaPN FROM deleted) a ON a.MaPN = h.MaPN
+    CROSS APPLY (
+        SELECT COALESCE(SUM(c.ThanhTien), 0) AS TongTien
+        FROM dbo.CHITIETPHIEUNHAPHANG c WITH (UPDLOCK, HOLDLOCK) WHERE c.MaPN = h.MaPN
+    ) t;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_PHIEUNHAPHANG_KiemTra
+ON dbo.PHIEUNHAPHANG
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF EXISTS (
+        SELECT 1 FROM inserted h
+        WHERE h.TongTien <> (SELECT COALESCE(SUM(c.ThanhTien), 0)
+                              FROM dbo.CHITIETPHIEUNHAPHANG c WITH (UPDLOCK, HOLDLOCK) WHERE c.MaPN = h.MaPN)
+    )
+        THROW 50101, N'Tổng tiền phải bằng tổng thành tiền các dòng chi tiết.', 1;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_HOADON_KiemTra
+ON dbo.HOADON
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF EXISTS (
+        SELECT 1 FROM inserted h
+        WHERE h.TongTien <> (SELECT COALESCE(SUM(c.ThanhTien), 0)
+                              FROM dbo.CHITIETHOADON c WITH (UPDLOCK, HOLDLOCK) WHERE c.MaHD = h.MaHD)
+    )
+        THROW 50101, N'Tổng tiền phải bằng tổng thành tiền các dòng chi tiết.', 1;
+    IF UPDATE(NgayLap)
+    BEGIN
+        IF EXISTS (
+            SELECT 1 FROM inserted h
+            JOIN dbo.CHITIETHOADON c ON c.MaHD = h.MaHD
+            JOIN dbo.KHUYENMAI k WITH (HOLDLOCK) ON k.MaKM = c.MaKM
+            WHERE CONVERT(date, h.NgayLap) NOT BETWEEN k.NgayBatDau AND k.NgayKetThuc
+        )
+            THROW 50102, N'Ngày lập hóa đơn nằm ngoài thời hạn khuyến mãi.', 1;
+
+        IF EXISTS (
+            SELECT 1 FROM inserted h JOIN dbo.BAOHANH b ON b.MaHD = h.MaHD
+            WHERE b.NgayBatDau < CONVERT(date, h.NgayLap)
+        )
+            THROW 50103, N'Ngày bảo hành không thể trước ngày lập hóa đơn.', 1;
+    END;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_BAOHANH_KiemTra
+ON dbo.BAOHANH
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF EXISTS (
+        SELECT 1 FROM inserted b JOIN dbo.HOADON h WITH (HOLDLOCK) ON h.MaHD = b.MaHD
+        WHERE b.NgayBatDau < CONVERT(date, h.NgayLap)
+    )
+        THROW 50103, N'Ngày bảo hành không thể trước ngày lập hóa đơn.', 1;
+
+    IF EXISTS (
+        SELECT 1 FROM (SELECT DISTINCT MaHD, MaDT FROM inserted) a
+        JOIN dbo.CHITIETHOADON c WITH (UPDLOCK, HOLDLOCK) ON c.MaHD = a.MaHD AND c.MaDT = a.MaDT
+        WHERE c.SoLuong <
+            (SELECT COUNT_BIG(*) FROM dbo.BAOHANH b WITH (UPDLOCK, HOLDLOCK)
+             WHERE b.MaHD = a.MaHD AND b.MaDT = a.MaDT)
+    )
+        THROW 50105, N'Số bảo hành vượt số máy đã mua.', 1;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_KHUYENMAI_KiemTraNgay
+ON dbo.KHUYENMAI
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF (UPDATE(NgayBatDau) OR UPDATE(NgayKetThuc)) AND EXISTS (
+        SELECT 1 FROM inserted k JOIN dbo.CHITIETHOADON c ON c.MaKM = k.MaKM
+        JOIN dbo.HOADON h ON h.MaHD = c.MaHD
+        WHERE CONVERT(date, h.NgayLap) NOT BETWEEN k.NgayBatDau AND k.NgayKetThuc
+    )
+        THROW 50102, N'Thời hạn mới loại bỏ hóa đơn đã áp dụng khuyến mãi.', 1;
+END;
+GO
+CREATE OR ALTER TRIGGER dbo.TR_CHITIETKHUYENMAI_KiemTraMucGiam
+ON dbo.CHITIETKHUYENMAI
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF UPDATE(PhanTramGiam) AND EXISTS (
+        SELECT 1 FROM inserted k JOIN deleted d ON d.MaKM = k.MaKM AND d.MaDT = k.MaDT
+        JOIN dbo.CHITIETHOADON c ON c.MaKM = k.MaKM AND c.MaDT = k.MaDT
+        WHERE k.PhanTramGiam <> d.PhanTramGiam
+    )
+        THROW 50106, N'Chi tiết đã dùng trong hóa đơn. Hãy tạo chương trình mới để đổi mức giảm.', 1;
+END;
 GO
 
 -- ===================== DỮ LIỆU MẪU =====================
@@ -311,7 +461,7 @@ INSERT INTO CHITIETKHUYENMAI (MaKM, MaDT, PhanTramGiam) VALUES
 
 -- Phiếu nhập PN1: 10 x iPhone 256GB (giá nhập 30.000.000) + 10 x S24 Ultra 256GB (25.000.000)
 INSERT INTO PHIEUNHAPHANG (NgayNhap, TongTien, MaNCC, MaNV) VALUES
-('2026-10-05 09:30:00', 550000000, 1, 1);
+('2026-10-05 09:30:00', 0, 1, 1);
 
 INSERT INTO CHITIETPHIEUNHAPHANG (MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VALUES
 (1, 1, 10, 30000000, 300000000),
@@ -319,7 +469,7 @@ INSERT INTO CHITIETPHIEUNHAPHANG (MaPN, MaDT, SoLuong, DonGiaNhap, ThanhTien) VA
 
 -- Hóa đơn HD1: 1 x iPhone (KM1 giảm 10%: 34.990.000 x 0,9 = 31.491.000) + 2 x Xiaomi 14 Pro (không KM: 43.980.000)
 INSERT INTO HOADON (NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) VALUES
-('2026-10-12 14:20:00', N'Chuyển khoản', 75471000, 1, 2);
+('2026-10-12 14:20:00', N'Chuyển khoản', 0, 1, 2);
 
 INSERT INTO CHITIETHOADON (MaHD, MaDT, SoLuong, DonGia, ThanhTien, MaKM) VALUES
 (1, 1, 1, 34990000, 31491000, 1),
