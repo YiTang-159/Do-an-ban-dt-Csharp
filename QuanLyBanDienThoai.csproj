@@ -4,12 +4,14 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Web/**</DefaultItemExcludes>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RootNamespace>QuanLyBanDienThoai</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Web/**/*.cs" />
     <!-- ClosedXML: đọc/ghi file Excel (.xlsx) cho ExcelHelper -->
     <PackageReference Include="NPOI" Version="2.7.2" />
     <PackageReference Include="ClosedXML" Version="0.102.2" />
