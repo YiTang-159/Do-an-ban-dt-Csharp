@@ -132,7 +132,8 @@ namespace QuanLyBanDienThoai.BUS
 
         private static string KiemTraKhach()
         {
-            return PhienDangNhap.LaKhachHang ? "" : "Chỉ khách hàng mới có giỏ hàng";
+            if (!PhienDangNhap.LaKhachHang || PhienDangNhap.MaKH <= 0) return "Chỉ khách hàng mới có giỏ hàng";
+            return PhienDangNhap.KiemTraConHieuLuc();
         }
 
         private int SoLuongDangCo(int maDT)

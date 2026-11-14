@@ -41,7 +41,7 @@ Thông tin kết nối của container:
 
 ### Bước 2. Tạo cơ sở dữ liệu
 
-Dùng Azure Data Studio hoặc SSMS kết nối vào server ở bước 1 (SQL Server Authentication, tick **Trust Server Certificate**), mở file `Database/QuanLyBanDienThoai.sql` rồi bấm **Execute**. Script tạo database `QuanLyBanDienThoai` cùng 16 bảng (14 bảng ERD, `THAMSO`, `TAIKHOAN`) và dữ liệu mẫu, có thể chạy lại nhiều lần (chạy lại sẽ xóa dữ liệu cũ).
+Dùng Azure Data Studio hoặc SSMS kết nối vào server ở bước 1 (SQL Server Authentication, tick **Trust Server Certificate**), mở file `Database/QuanLyBanDienThoai.sql` rồi bấm **Execute**. Script tạo database `QuanLyBanDienThoai` cùng 16 bảng (14 bảng ERD, `THAMSO`, `TAIKHOAN`) và dữ liệu mẫu. Dùng script này khi tạo CSDL mới vì script có lệnh xóa và tạo lại bảng.
 
 Nếu máy có sẵn `sqlcmd`, có thể chạy bằng dòng lệnh:
 
@@ -49,7 +49,7 @@ Nếu máy có sẵn `sqlcmd`, có thể chạy bằng dòng lệnh:
 sqlcmd -S localhost,14333 -U sa -P "Qldt@12345" -C -i Database\QuanLyBanDienThoai.sql
 ```
 
-Sau đó mở tiếp `Database/TV2_BoSungRangBuoc.sql` và **Execute** (thêm các CHECK về SĐT và thành tiền phiếu nhập; chạy nhiều lần không lỗi). Có thể chạy thêm `docs/TV4_KiemTraDuLieu.sql` để đối chiếu dữ liệu.
+Với CSDL đang sử dụng, chạy `Database/VaLoiCSDL.sql` để áp dụng bản vá ràng buộc. Để bù dữ liệu demo lên tối thiểu 20 dòng ở các bảng nghiệp vụ, chạy `Database/Du_lieu_demo_20_dong.sql` và xem bảng đếm ở cuối kết quả. Có thể chạy thêm `docs/TV4_KiemTraDuLieu.sql` để đối chiếu dữ liệu.
 
 ### Bước 3. Cấu hình chuỗi kết nối
 
@@ -125,7 +125,7 @@ docker compose down -v     # xóa container và toàn bộ dữ liệu
 
 ## Làm việc nhóm
 
-Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md](CONTRIBUTING.md). Sơ đồ CSDL: [bản chỉnh sửa bằng draw.io](ERD_CuaHangDienThoai.drawio) và [bản xem PNG](ERD_CuaHangDienThoai.drawio.png).
+Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md](CONTRIBUTING.md). Sơ đồ CSDL: `ERD_CuaHangDienThoai.drawio.png`.
 
 ## Ghi chú thiết kế (bổ sung)
 
@@ -134,16 +134,3 @@ Quy trình Git, tên nhánh, cách tạo Pull Request xem trong [CONTRIBUTING.md
 - **Tính duy nhất:** `UNIQUE` ở CSDL cho tên hãng, tên loại, tên khuyến mãi, bộ (TenDT, RAM, BoNho, MauSac); BUS kiểm tra trước để báo lỗi dễ hiểu.
 - **Hóa đơn:** khi lưu, BUS tính lại giá theo giá niêm yết và khuyến mãi hiện hành; nếu đã đổi thì yêu cầu thêm lại dòng.
 - **Nhập hàng:** nhân viên lập phiếu là người đang đăng nhập.
-- **Chạy lại script SQL** (`Database/QuanLyBanDienThoai.sql`) để áp dụng các ràng buộc UNIQUE mới.
-
-### Cập nhật khóa ngoại cho database đã có dữ liệu
-
-Dừng ứng dụng, mở và Execute `Database/CapNhat_KhoaNgoai_ERD.sql` trong SSMS, sau đó build và chạy mã nguồn v3. Script cài khóa ngoại và trigger trong một transaction, tính lại tổng chứng từ từ các dòng chi tiết và hoàn tác toàn bộ nếu dữ liệu chi tiết cũ vi phạm quy tắc. Với database thử nghiệm mới, chạy `Database/QuanLyBanDienThoai.sql` để tạo đủ schema, trigger và dữ liệu mẫu. Script tạo lại có lệnh DROP TABLE.
-
-### Kiểm thử và giải thích khi vấn đáp
-
-- Chạy `Database/KiemThu_RangBuoc_ERD.sql` trên database demo và xem tab Messages. Bốn ca thử dữ liệu sai đều dùng transaction và hoàn tác.
-- Hóa đơn và phiếu nhập bắt đầu có tổng bằng 0. Trigger tính lại tổng từ các dòng chi tiết trong cùng transaction lưu chứng từ. WinForms vẫn cập nhật tồn kho và điểm trong transaction của DAO.
-- SQL kiểm tra ngày lập hóa đơn nằm trong thời hạn khuyến mãi, tính thành tiền theo đơn giá lưu trên dòng và mức giảm, đồng thời khóa mức giảm đã dùng để giữ lịch sử. Muốn đổi mức giảm đã dùng thì tạo chương trình mới.
-- SQL kiểm tra số phiếu bảo hành theo cặp hóa đơn và điện thoại, kể cả thao tác nhiều dòng. Khi hai phiên ghi cạnh tranh, một phiên có thể phải thực hiện lại nếu SQL Server hủy giao dịch do deadlock.
-- Các kiểm tra bảo đảm IMEI đúng định dạng và duy nhất. Việc xác nhận IMEI của đúng máy vật lý cần dữ liệu IMEI theo từng máy từ khâu nhập hoặc bán.

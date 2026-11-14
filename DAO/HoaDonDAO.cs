@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
@@ -84,14 +84,15 @@ namespace QuanLyBanDienThoai.DAO
                 {
                     try
                     {
+                        MyConnection.DatQuyenSuaTon(conn, tran, true);
                         string sqlHD =
                             "INSERT INTO HOADON(NgayLap, PhuongThucTT, TongTien, MaKH, MaNV) " +
-                            "VALUES(@p0, @p1, 0, @p2, @p3); SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                            "VALUES(@p0, @p1, @p2, @p3, @p4); SELECT CAST(SCOPE_IDENTITY() AS INT)";
                         int maHD;
                         using (SqlCommand cmd = new SqlCommand(sqlHD, conn, tran))
                         {
                             MyConnection.GanThamSo(cmd, sqlHD,
-                                new object[] { hd.NgayLap, hd.PhuongThucTT, hd.MaKH, hd.MaNV });
+                                new object[] { hd.NgayLap, hd.PhuongThucTT, hd.TongTien, hd.MaKH, hd.MaNV });
                             maHD = Convert.ToInt32(cmd.ExecuteScalar());
                         }
 
@@ -139,13 +140,13 @@ namespace QuanLyBanDienThoai.DAO
                             cmd.ExecuteNonQuery();
                         }
 
+                        MyConnection.DatQuyenSuaTon(conn, tran, false);
                         tran.Commit();
                         return maHD;
                     }
                     catch
                     {
-                        if (tran.Connection != null)
-                            tran.Rollback();
+                        tran.Rollback();
                         throw;
                     }
                 }

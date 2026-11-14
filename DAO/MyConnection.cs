@@ -28,6 +28,14 @@ namespace QuanLyBanDienThoai.DAO
         }
         // Trả về SqlConnection MỚI, CHƯA MỞ. Nơi gọi tự Open() và Dispose().
         // Dùng khi cần tự làm transaction (LuuHoaDon, LuuPhieuNhap).
+        // Bật / tắt cờ cho phép đổi SoLuongTon trên kết nối này (trigger TR_DIENTHOAI_BaoVeTonKho đọc cờ).
+        // Chỉ gọi trong luồng nhập hàng và bán hàng.
+        public static void DatQuyenSuaTon(SqlConnection conn, SqlTransaction tran, bool cho)
+        {
+            using (SqlCommand cmd = new SqlCommand("EXEC sp_set_session_context N'cho_phep_sua_ton', " + (cho ? "1" : "0"), conn, tran))
+                cmd.ExecuteNonQuery();
+        }
+
         public static SqlConnection TaoKetNoi()
         {
             return new SqlConnection(ChuoiKetNoi);

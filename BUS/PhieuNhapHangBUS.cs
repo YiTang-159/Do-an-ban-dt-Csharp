@@ -57,6 +57,7 @@ namespace QuanLyBanDienThoai.BUS
         {
             maPN = 0;
             if (!PhienDangNhap.LaNhanSu || PhienDangNhap.MaNV <= 0) return "Chỉ nhân viên hoặc quản trị viên mới được lập phiếu nhập";
+            { string loiPhien = PhienDangNhap.KiemTraConHieuLuc(); if (loiPhien != "") return loiPhien; }
             if (p == null || p.MaNCC <= 0) return "Chọn nhà cung cấp";
             if (ds == null || ds.Count == 0) return "Phiếu nhập phải có ít nhất một dòng";
             try

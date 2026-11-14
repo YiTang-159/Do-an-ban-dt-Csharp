@@ -1,4 +1,5 @@
 ﻿using System;
+using QuanLyBanDienThoai.DAO;
 using QuanLyBanDienThoai.DTO;
 
 namespace QuanLyBanDienThoai.BUS
@@ -21,6 +22,22 @@ namespace QuanLyBanDienThoai.BUS
         public static void KetThuc()
         {
             TaiKhoanHienTai = null;
+        }
+
+        // Phiên lưu trong bộ nhớ nên không tự biết tài khoản đã bị khóa hay đổi quyền ở máy khác.
+        // Các thao tác ghi quan trọng gọi hàm này để đọc lại tài khoản từ CSDL. Trả về "" nếu còn hiệu lực, ngược lại là lý do.
+        public static string KiemTraConHieuLuc()
+        {
+            TaiKhoan cu = TaiKhoanHienTai;
+            if (cu == null) return "Bạn chưa đăng nhập";
+            TaiKhoan moi;
+            try { moi = new TaiKhoanDAO().GetByTenDangNhap(cu.TenDangNhap); }
+            catch (Exception ex) { return "Không kiểm tra được tài khoản đang đăng nhập: " + ex.Message; }
+            if (moi == null) return "Tài khoản không còn tồn tại, hãy đăng nhập lại";
+            if (!moi.TrangThai) return "Tài khoản đã bị khóa, hãy đăng xuất";
+            if (moi.VaiTro != cu.VaiTro || moi.MaNV != cu.MaNV || moi.MaKH != cu.MaKH)
+                return "Quyền của tài khoản đã thay đổi, hãy đăng nhập lại";
+            return "";
         }
 
         public static void CapNhatHoTen(string hoTen)

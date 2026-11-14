@@ -35,18 +35,7 @@ namespace QuanLyBanDienThoai.BUS
         }
         public string Xoa(int maKM,int maDT)
         {
-            try
-            {
-                return dao.Delete(maKM,maDT)>0?"":"Không tìm thấy chi tiết";
-            }
-            catch (System.Data.SqlClient.SqlException ex) when (ex.Number == 547 && ex.Message.Contains("FK_CTHD_CTKM"))
-            {
-                return "Không thể xóa vì khuyến mãi này đã được áp dụng cho điện thoại trong hóa đơn.";
-            }
-            catch (Exception ex)
-            {
-                return "Lỗi xóa chi tiết: " + ex.Message;
-            }
+            try{return dao.Delete(maKM,maDT)>0?"":"Không tìm thấy chi tiết";}catch(Exception ex){return "Lỗi xóa chi tiết: "+ex.Message;}
         }
         public string NhapDanhSach(ArrayList ds,out int thanhCong)
         {

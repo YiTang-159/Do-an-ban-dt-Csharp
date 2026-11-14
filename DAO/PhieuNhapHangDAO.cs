@@ -12,7 +12,7 @@ namespace QuanLyBanDienThoai.DAO
         public ArrayList GetAll()
         {
             DataTable dt = MyConnection.ExecuteQuery(
-                "SELECT p.MaPN, p.NgayNhap, p.MaNCC, n.TenNCC, p.MaNV, v.Ho + N' ' + v.Ten AS TenNhanVien " +
+                "SELECT p.MaPN, p.NgayNhap, p.TongTien, p.MaNCC, n.TenNCC, p.MaNV, v.Ho + N' ' + v.Ten AS TenNhanVien " +
                 "FROM PHIEUNHAPHANG p JOIN NHACUNGCAP n ON p.MaNCC = n.MaNCC JOIN NHANVIEN v ON p.MaNV = v.MaNV " +
                 "ORDER BY p.MaPN DESC");
             ArrayList ds = new ArrayList();
@@ -62,12 +62,13 @@ namespace QuanLyBanDienThoai.DAO
                 {
                     try
                     {
+                        MyConnection.DatQuyenSuaTon(c, tx, true);
                         string sqlPN = "INSERT INTO PHIEUNHAPHANG(NgayNhap, TongTien, MaNCC, MaNV) " +
-                                       "VALUES(GETDATE(), 0, @p0, @p1); SELECT CAST(SCOPE_IDENTITY() AS INT)";
+                                       "VALUES(GETDATE(), @p0, @p1, @p2); SELECT CAST(SCOPE_IDENTITY() AS INT)";
                         int id;
                         using (SqlCommand cmd = new SqlCommand(sqlPN, c, tx))
                         {
-                            MyConnection.GanThamSo(cmd, sqlPN, new object[] { p.MaNCC, p.MaNV });
+                            MyConnection.GanThamSo(cmd, sqlPN, new object[] { p.TongTien, p.MaNCC, p.MaNV });
                             id = Convert.ToInt32(cmd.ExecuteScalar());
                         }
                         foreach (object o in ds)
@@ -87,13 +88,13 @@ namespace QuanLyBanDienThoai.DAO
                                 if (cmd.ExecuteNonQuery() != 1) throw new Exception("Điện thoại không tồn tại: " + d.MaDT);
                             }
                         }
+                        MyConnection.DatQuyenSuaTon(c, tx, false);
                         tx.Commit();
                         return id;
                     }
                     catch
                     {
-                        if (tx.Connection != null)
-                            tx.Rollback();
+                        tx.Rollback();
                         throw;
                     }
                 }

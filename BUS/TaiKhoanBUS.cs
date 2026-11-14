@@ -86,6 +86,7 @@ namespace QuanLyBanDienThoai.BUS
             {
                 TaiKhoan tk = dao.GetByTenDangNhap(tenDangNhap);
                 if (tk == null) return "Không tìm thấy tài khoản";
+                if (!tk.TrangThai) return "Tài khoản đã bị khóa, hãy đăng xuất";
                 if (tk.MatKhau != MatKhauHelper.Bam(matKhauCu)) return "Mật khẩu hiện tại không đúng";
                 if ((matKhauMoi ?? "").Length < 6) return "Mật khẩu mới phải có ít nhất 6 ký tự";
                 if (matKhauMoi != nhapLai) return "Nhập lại mật khẩu mới không khớp";
@@ -102,7 +103,8 @@ namespace QuanLyBanDienThoai.BUS
 
         private static string KiemTraQuyen()
         {
-            return PhienDangNhap.LaAdmin ? "" : "Chỉ quản trị viên mới được thực hiện thao tác này";
+            if (!PhienDangNhap.LaAdmin) return "Chỉ quản trị viên mới được thực hiện thao tác này";
+            return PhienDangNhap.KiemTraConHieuLuc();
         }
 
         // Tạo tài khoản cho một nhân viên hoặc khách hàng ĐÃ CÓ trong CSDL (maDoiTuong = MaNV hoặc MaKH).

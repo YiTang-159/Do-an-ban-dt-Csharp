@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using QuanLyBanDienThoai.DAO;
 using QuanLyBanDienThoai.DTO;
@@ -46,6 +46,7 @@ namespace QuanLyBanDienThoai.BUS
         public string Them(ThamSo x)
         {
             if (!PhienDangNhap.LaAdmin) return "Chỉ Admin được sửa tham số";
+            { string loiPhien = PhienDangNhap.KiemTraConHieuLuc(); if (loiPhien != "") return loiPhien; }
             string loi = KiemTra(x);
             if (loi != "") return loi;
             foreach (object o in dao.GetAll())
@@ -59,6 +60,7 @@ namespace QuanLyBanDienThoai.BUS
         public string Sua(ThamSo x)
         {
             if (!PhienDangNhap.LaAdmin) return "Chỉ Admin được sửa tham số";
+            { string loiPhien = PhienDangNhap.KiemTraConHieuLuc(); if (loiPhien != "") return loiPhien; }
             string loi = KiemTra(x);
             if (loi != "") return loi;
             return Ghi(x, true);
@@ -67,6 +69,7 @@ namespace QuanLyBanDienThoai.BUS
         public string Xoa(string ten)
         {
             if (!PhienDangNhap.LaAdmin) return "Chỉ Admin được xóa tham số";
+            { string loiPhien = PhienDangNhap.KiemTraConHieuLuc(); if (loiPhien != "") return loiPhien; }
             if (Array.IndexOf(ThamSoBatBuoc, ten) >= 0)
                 return "Tham số \"" + ten + "\" là tham số bắt buộc của chương trình, chỉ được sửa giá trị, không được xóa";
             try

@@ -56,10 +56,19 @@ namespace QuanLyBanDienThoai.BUS
         // Khách hàng tự sửa thông tin của mình (DiemTichLuy không đổi)
         public string CapNhatThongTin(KhachHang x)
         {
-            string loi = KiemTra(x);
-            if (loi != "") return loi;
+            if (!PhienDangNhap.LaKhachHang || PhienDangNhap.MaKH <= 0 || x == null || x.MaKH != PhienDangNhap.MaKH)
+                return "Khách hàng chỉ được cập nhật hồ sơ của mình";
+
+            string loi = PhienDangNhap.KiemTraConHieuLuc();
+            return loi == "" ? LuuThongTin(x) : loi;
+        }
+
+        private string LuuThongTin(KhachHang x)
+        {
             try
             {
+                string loi = KiemTra(x);
+                if (loi != "") return loi;
                 if (dao.Update(x) == 0) return "Không tìm thấy khách hàng cần sửa";
                 return "";
             }
@@ -70,7 +79,12 @@ namespace QuanLyBanDienThoai.BUS
         }
         public ArrayList TimNangCao(string tuKhoa)=>TimKiem(tuKhoa);
         public string Them(KhachHang x){string loi=KiemTra(x);if(loi!="")return loi;try{return dao.Insert(x)>0?"":"Không thêm được";}catch(Exception e){return e.Message;}}
-        public string Sua(KhachHang x)=>CapNhatThongTin(x);
+        public string Sua(KhachHang x)
+        {
+            if (!PhienDangNhap.LaNhanSu) return "Chỉ nhân sự được quản lý hồ sơ khách hàng";
+            string loi = PhienDangNhap.KiemTraConHieuLuc();
+            return loi == "" ? LuuThongTin(x) : loi;
+        }
         public string Xoa(int id){try{return dao.Delete(id)>0?"":"Không tìm thấy khách hàng";}catch(Exception e){return "Không thể xóa (có dữ liệu liên quan): "+e.Message;}}
 
         public ArrayList TimNangCao(System.Collections.Generic.List<DieuKien> conditions) => TimKiemHelper.Loc(dao.GetAll(), conditions);

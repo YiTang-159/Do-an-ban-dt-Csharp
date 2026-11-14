@@ -211,6 +211,7 @@ namespace QuanLyBanDienThoai.BUS
         {
             maHD = 0;
             if (!PhienDangNhap.LaNhanSu || PhienDangNhap.MaNV <= 0) return "Chỉ nhân viên hoặc quản trị viên mới được lập hóa đơn";
+            { string loiPhien = PhienDangNhap.KiemTraConHieuLuc(); if (loiPhien != "") return loiPhien; }
             if (maKH <= 0) return "Hãy chọn khách hàng";
             if (new KhachHangBUS().GetById(maKH) == null) return "Không tìm thấy khách hàng";
             if (dong == null || dong.Count == 0) return "Hóa đơn phải có ít nhất một điện thoại";
