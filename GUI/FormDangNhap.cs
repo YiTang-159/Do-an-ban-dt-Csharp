@@ -73,7 +73,7 @@ namespace QuanLyBanDienThoai.GUI
             Controls.Add(btnDangNhap);
             Controls.Add(btnThoat);
             Controls.Add(lnkDangKy);
-            Controls.Add(lblGoiY);
+            //Controls.Add(lblGoiY);
             Controls.Add(lblTieuDe);
 
             AcceptButton = btnDangNhap;     // Enter = Đăng nhập
