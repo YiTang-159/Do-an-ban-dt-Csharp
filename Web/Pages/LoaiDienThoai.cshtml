@@ -1,0 +1,105 @@
+﻿@page
+@model QuanLyBanDienThoai.Web.Pages.LoaiDienThoaiModel
+@{
+    var dangSua = Model.Nhap.MaLoai > 0;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý loại điện thoại</title>
+    <link rel="stylesheet" href="~/site.css" asp-append-version="true">
+</head>
+<body>
+<main>
+    <header>
+        <p class="eyebrow">QUẢN LÝ CỬA HÀNG ĐIỆN THOẠI</p>
+        <h1>Loại điện thoại</h1>
+        <form method="post" asp-page="/Logout"><button type="submit">Đăng xuất Admin</button></form>
+        <p>Quản lý danh mục loại dùng chung với ứng dụng WinForms.</p>
+        <p><a asp-page="/Index" style="color:#d8e8fa">Hãng điện thoại</a> | <strong>Loại điện thoại</strong></p>
+    </header>
+
+    @if (Model.ThongBao is not null)
+    {
+        <p class="success" role="status">@Model.ThongBao</p>
+    }
+    @if (Model.LoiTai is not null)
+    {
+        <p class="error" role="alert">@Model.LoiTai</p>
+    }
+
+    <section class="card" aria-labelledby="editor">
+        <h2 id="editor">@(dangSua ? $"Sửa loại #{Model.Nhap.MaLoai}" : "Thêm loại")</h2>
+        <div asp-validation-summary="ModelOnly" class="error" role="alert"></div>
+        <form method="post" asp-page-handler="Luu" asp-route-TuKhoa="@Model.TuKhoa">
+            <input asp-for="Nhap.MaLoai" type="hidden">
+            <div class="fields">
+                <label>Tên loại
+                    <input asp-for="Nhap.TenLoai" required maxlength="100" placeholder="Ví dụ Smartphone">
+                    <span asp-validation-for="Nhap.TenLoai" class="error"></span>
+                </label>
+                <label>Mô tả
+                    <input asp-for="Nhap.MoTa" maxlength="255" placeholder="Ví dụ Điện thoại thông minh">
+                    <span asp-validation-for="Nhap.MoTa" class="error"></span>
+                </label>
+            </div>
+            @if (Model.LoiTai is null)
+            {
+                <button type="submit">@(dangSua ? "Lưu thay đổi" : "Thêm loại")</button>
+            }
+            @if (dangSua)
+            {
+                <a asp-page="/LoaiDienThoai" asp-route-TuKhoa="@Model.TuKhoa">Hủy sửa</a>
+            }
+        </form>
+    </section>
+
+    <section class="card" aria-labelledby="list">
+        <h2 id="list">Danh sách loại</h2>
+        <form method="get" asp-page="/LoaiDienThoai" class="search">
+            <label for="TuKhoa">Tìm theo mã, tên hoặc mô tả</label>
+            <div class="actions">
+                <input asp-for="TuKhoa" type="search">
+                <button type="submit">Tìm</button>
+                <a asp-page="/LoaiDienThoai">Hiện tất cả</a>
+            </div>
+        </form>
+
+        @if (Model.LoiTai is null)
+        {
+            <p class="count">@Model.DanhSach.Count kết quả</p>
+            @if (Model.DanhSach.Count > 0)
+            {
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th scope="col">Mã loại</th><th scope="col">Tên loại</th><th scope="col">Mô tả</th><th scope="col">Thao tác</th></tr></thead>
+                        <tbody>
+                        @foreach (var loai in Model.DanhSach)
+                        {
+                            <tr>
+                                <td>@loai.MaLoai</td>
+                                <td>@loai.TenLoai</td>
+                                <td>@(string.IsNullOrWhiteSpace(loai.MoTa) ? "—" : loai.MoTa)</td>
+                                <td>
+                                    <div class="actions">
+                                        <a asp-page="/LoaiDienThoai" asp-route-sua="@loai.MaLoai" asp-route-TuKhoa="@Model.TuKhoa">Sửa</a>
+                                        <form method="post" asp-page-handler="Xoa" asp-route-TuKhoa="@Model.TuKhoa"
+                                              onsubmit="return confirm('Xóa loại điện thoại đã chọn?');">
+                                            <input type="hidden" name="maLoai" value="@loai.MaLoai">
+                                            <button type="submit" class="delete">Xóa</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </section>
+</main>
+</body>
+</html>

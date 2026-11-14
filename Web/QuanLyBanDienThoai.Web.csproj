@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -6,8 +6,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <Compile Include="../BUS/HangDTBUS.cs;../BUS/TimKiemHelper.cs;../BUS/MatKhauHelper.cs" Link="BUS/%(Filename)%(Extension)" />
-    <Compile Include="../DAO/MyConnection.cs;../DAO/HangDTDAO.cs;../DAO/DienThoaiDAO.cs;../DAO/TaiKhoanDAO.cs" Link="DAO/%(Filename)%(Extension)" />
-    <Compile Include="../DTO/HangDT.cs;../DTO/DienThoai.cs;../DTO/TaiKhoan.cs;../DTO/VaiTroTK.cs" Link="DTO/%(Filename)%(Extension)" />
+    <Compile Include="../BUS/HangDTBUS.cs;../BUS/LoaiDienThoaiBUS.cs;../BUS/TimKiemHelper.cs;../BUS/MatKhauHelper.cs" Link="BUS/%(Filename)%(Extension)" />
+    <Compile Include="../DAO/MyConnection.cs;../DAO/HangDTDAO.cs;../DAO/LoaiDienThoaiDAO.cs;../DAO/DienThoaiDAO.cs;../DAO/TaiKhoanDAO.cs" Link="DAO/%(Filename)%(Extension)" />
+    <Compile Include="../DTO/HangDT.cs;../DTO/LoaiDienThoai.cs;../DTO/DienThoai.cs;../DTO/TaiKhoan.cs;../DTO/VaiTroTK.cs" Link="DTO/%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

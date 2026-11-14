@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QuanLyBanDienThoai.Web.Pages.IndexModel
 @{
     var dangSua = Model.Nhap.MaHang > 0;
@@ -17,6 +17,7 @@
         <p class="eyebrow">QUẢN LÝ CỬA HÀNG ĐIỆN THOẠI</p>
         <h1>Hãng điện thoại</h1><form method="post" asp-page="/Logout"><button type="submit">Đăng xuất Admin</button></form>
         <p>Quản lý danh mục hãng dùng chung với ứng dụng WinForms.</p>
+        <p><strong>Hãng điện thoại</strong> | <a asp-page="/LoaiDienThoai" style="color:#d8e8fa">Loại điện thoại</a></p>
     </header>
 
     @if (Model.ThongBao is not null)
