@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/"));
 builder.Services.AddScoped<QuanLyBanDienThoai.BUS.HangDTBUS>();
 builder.Services.AddScoped<QuanLyBanDienThoai.BUS.LoaiDienThoaiBUS>();
+builder.Services.AddScoped<QuanLyBanDienThoai.BUS.DienThoaiBUS>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
