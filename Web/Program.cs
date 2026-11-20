@@ -6,6 +6,7 @@ builder.Services.AddRazorPages(options => options.Conventions.AuthorizeFolder("/
 builder.Services.AddScoped<QuanLyBanDienThoai.BUS.HangDTBUS>();
 builder.Services.AddScoped<QuanLyBanDienThoai.BUS.LoaiDienThoaiBUS>();
 builder.Services.AddScoped<QuanLyBanDienThoai.BUS.DienThoaiBUS>();
+builder.Services.AddScoped<QuanLyBanDienThoai.BUS.KhachHangBUS>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -37,6 +38,10 @@ app.Use(async (ctx, next) =>
                 await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 ctx.Response.Redirect("/Login");
                 return;
+            }
+            if (!QuanLyBanDienThoai.BUS.PhienDangNhap.DaDangNhap || QuanLyBanDienThoai.BUS.PhienDangNhap.TaiKhoanHienTai?.TenDangNhap != account.TenDangNhap)
+            {
+                QuanLyBanDienThoai.BUS.PhienDangNhap.BatDau(account);
             }
         }
         catch { ctx.Response.StatusCode = 503; await ctx.Response.WriteAsync("Không kiểm tra được tài khoản trong SQL Server."); return; }

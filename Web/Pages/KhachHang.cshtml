@@ -1,0 +1,143 @@
+@page
+@model QuanLyBanDienThoai.Web.Pages.KhachHangModel
+@{
+    var dangSua = Model.Nhap.MaKH > 0;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý khách hàng</title>
+    <link rel="stylesheet" href="~/site.css" asp-append-version="true">
+</head>
+<body>
+<main>
+    <header>
+        <p class="eyebrow">QUẢN LÝ CỬA HÀNG ĐIỆN THOẠI</p>
+        <h1>Khách hàng</h1>
+        <form method="post" asp-page="/Logout"><button type="submit">Đăng xuất Admin</button></form>
+        <p>Quản lý danh mục khách hàng dùng chung với ứng dụng WinForms.</p>
+        <p><a asp-page="/Index" style="color:#d8e8fa">Hãng điện thoại</a> | <a asp-page="/LoaiDienThoai" style="color:#d8e8fa">Loại điện thoại</a> | <a asp-page="/DienThoai" style="color:#d8e8fa">Điện thoại</a> | <strong>Khách hàng</strong></p>
+    </header>
+
+    @if (Model.ThongBao is not null)
+    {
+        <p class="success" role="status">@Model.ThongBao</p>
+    }
+    @if (Model.LoiTai is not null)
+    {
+        <p class="error" role="alert">@Model.LoiTai</p>
+    }
+
+    <section class="card" aria-labelledby="editor">
+        <h2 id="editor">@(dangSua ? $"Sửa khách hàng #{Model.Nhap.MaKH}" : "Thêm khách hàng")</h2>
+        <div asp-validation-summary="ModelOnly" class="error" role="alert"></div>
+        <form method="post" asp-page-handler="Luu" asp-route-TuKhoa="@Model.TuKhoa">
+            <input asp-for="Nhap.MaKH" type="hidden">
+            <div class="fields">
+                <label>Họ và tên đệm
+                    <input asp-for="Nhap.Ho" required maxlength="50" placeholder="Ví dụ Nguyễn Văn">
+                    <span asp-validation-for="Nhap.Ho" class="error"></span>
+                </label>
+                <label>Tên
+                    <input asp-for="Nhap.Ten" required maxlength="50" placeholder="Ví dụ An">
+                    <span asp-validation-for="Nhap.Ten" class="error"></span>
+                </label>
+                <label>Số điện thoại
+                    <input asp-for="Nhap.SDT" required maxlength="10" placeholder="Ví dụ 0901234567">
+                    <span asp-validation-for="Nhap.SDT" class="error"></span>
+                </label>
+                <label>Email
+                    <input asp-for="Nhap.Email" type="email" required maxlength="100" placeholder="Ví dụ an.nguyen@example.com">
+                    <span asp-validation-for="Nhap.Email" class="error"></span>
+                </label>
+                <label>Địa chỉ
+                    <input asp-for="Nhap.DiaChi" required maxlength="255" placeholder="Ví dụ 123 Lê Lợi, Q.1, TP.HCM">
+                    <span asp-validation-for="Nhap.DiaChi" class="error"></span>
+                </label>
+                <label>Ngày sinh
+                    <input asp-for="Nhap.NgaySinh" type="date">
+                    <span asp-validation-for="Nhap.NgaySinh" class="error"></span>
+                </label>
+                @if (dangSua)
+                {
+                    <label>Điểm tích lũy
+                        <input value="@Model.Nhap.DiemTichLuy" readonly style="background:#f4f7fb">
+                    </label>
+                }
+            </div>
+            @if (Model.LoiTai is null)
+            {
+                <button type="submit">@(dangSua ? "Lưu thay đổi" : "Thêm khách hàng")</button>
+            }
+            @if (dangSua)
+            {
+                <a asp-page="/KhachHang" asp-route-TuKhoa="@Model.TuKhoa">Hủy sửa</a>
+            }
+        </form>
+    </section>
+
+    <section class="card" aria-labelledby="list">
+        <h2 id="list">Danh sách khách hàng</h2>
+        <form method="get" asp-page="/KhachHang" class="search">
+            <label for="TuKhoa">Tìm theo mã, tên, SĐT, email hoặc địa chỉ</label>
+            <div class="actions">
+                <input asp-for="TuKhoa" type="search" placeholder="Nhập từ khóa tìm kiếm...">
+                <button type="submit">Tìm</button>
+                <a asp-page="/KhachHang">Hiện tất cả</a>
+            </div>
+        </form>
+
+        @if (Model.LoiTai is null)
+        {
+            <p class="count">@Model.DanhSach.Count kết quả</p>
+            @if (Model.DanhSach.Count > 0)
+            {
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Mã KH</th>
+                                <th scope="col">Họ và tên</th>
+                                <th scope="col">Số điện thoại</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Địa chỉ</th>
+                                <th scope="col">Ngày sinh</th>
+                                <th scope="col">Điểm tích lũy</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var kh in Model.DanhSach)
+                        {
+                            <tr>
+                                <td>@kh.MaKH</td>
+                                <td><strong>@kh.HoTen</strong></td>
+                                <td>@kh.SDT</td>
+                                <td>@kh.Email</td>
+                                <td>@kh.DiaChi</td>
+                                <td>@(kh.NgaySinh.HasValue ? kh.NgaySinh.Value.ToString("dd/MM/yyyy") : "—")</td>
+                                <td>@kh.DiemTichLuy</td>
+                                <td>
+                                    <div class="actions">
+                                        <a asp-page="/KhachHang" asp-route-sua="@kh.MaKH" asp-route-TuKhoa="@Model.TuKhoa">Sửa</a>
+                                        <form method="post" asp-page-handler="Xoa" asp-route-TuKhoa="@Model.TuKhoa"
+                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
+                                            <input type="hidden" name="maKH" value="@kh.MaKH">
+                                            <button type="submit" class="delete">Xóa</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+    </section>
+</main>
+</body>
+</html>
+
