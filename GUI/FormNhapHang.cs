@@ -56,9 +56,7 @@ namespace QuanLyBanDienThoai.GUI
             lblTong.Font = new Font(Font, FontStyle.Bold);
 
             grid.Dock = DockStyle.Fill;
-            grid.ReadOnly = true;
-            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grid.AllowUserToAddRows = false;
+            GridHelper.CauHinh(grid);
 
             // Fill thêm vào trước, các thanh Top/Bottom thêm sau
             Controls.Add(grid);
@@ -140,8 +138,11 @@ namespace QuanLyBanDienThoai.GUI
         private void ThemDong()
         {
             string loi = bus.TaoDong(dong, MaDangChon(cboDT), (int)numSL.Value, numGia.Value);
-            if (loi != "") MessageBox.Show(loi);
-            else CapNhatLuoi();
+            if (loi != "") { MessageBox.Show(loi); return; }
+
+            ChiTietPhieuNhapHang chiTiet = (ChiTietPhieuNhapHang)dong[dong.Count - 1];
+            chiTiet.TenDT = cboDT.Text;
+            CapNhatLuoi();
         }
 
         private void XoaDong()
@@ -174,8 +175,15 @@ namespace QuanLyBanDienThoai.GUI
 
         private void CapNhatLuoi()
         {
-            grid.DataSource = null;
-            grid.DataSource = dong.ToArray();
+            GridHelper.GanDuLieu(grid, dong, typeof(ChiTietPhieuNhapHang));
+            UiHelper.Giau(grid, nameof(ChiTietPhieuNhapHang.MaPN));
+            UiHelper.TieuDe(grid, nameof(ChiTietPhieuNhapHang.MaDT), "Mã ĐT");
+            UiHelper.TieuDe(grid, nameof(ChiTietPhieuNhapHang.TenDT), "Điện thoại");
+            UiHelper.TieuDe(grid, nameof(ChiTietPhieuNhapHang.SoLuong), "Số lượng");
+            UiHelper.TieuDe(grid, nameof(ChiTietPhieuNhapHang.DonGiaNhap), "Giá nhập");
+            UiHelper.TieuDe(grid, nameof(ChiTietPhieuNhapHang.ThanhTien), "Thành tiền");
+            if (grid.Columns.Contains(nameof(ChiTietPhieuNhapHang.TenDT)))
+                grid.Columns[nameof(ChiTietPhieuNhapHang.TenDT)].DisplayIndex = 2;
             lblTong.Text = "Tổng tiền: " + bus.TinhTongTienNhap(dong).ToString("N0") + " đ";
         }
     }
